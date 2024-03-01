@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="flex h-screen">
+        <div class="fixed left-0 md:w-64 bg-gray-800 text-white h-full md:h-screen overflow-y-auto hidden md:block">
+            <div class="flex items-center justify-center py-4">
+                <span class="text-xl font-bold">Dashboard</span>
+            </div>
+            <ul class="mt-6">
+                <li class="px-4 py-2 rounded-md hover:bg-gray-700">
+                    <a href="#" class="font-medium">Home</a>
+                </li>
+                <li class="px-4 py-2 rounded-md hover:bg-gray-700">
+                    <a href="#" class="font-medium">Tasks</a>
+                </li>
+                <li class="px-4 py-2 rounded-md hover:bg-gray-700">
+                    <a href="#" class="font-medium">Settings</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-y-auto px-4 md:pl-64">
+            <div class="bg-white rounded-lg shadow mx-auto mt-4 w-full max-w-sm">
+                <div class="px-4 py-3 border-b border-gray-200">
+                    <h2 class="text-xl font-bold">Task Manager</h2>
+                </div>
+
+                <ul id="task-list" class="px-4 py-2">
+                    </ul>
+
+                <div class="flex justify-end items-center py-2 px-4">
+                    <button id="add-task-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Task</button>
+                </div>
+
+                <div id="add-task-modal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden">
+                    <div class="flex items-center justify-center min-h-screen pt-4 px-4">
+                        <div class="w-full max-w-sm bg-white rounded-lg overflow-hidden shadow-xl">
+                            <div class="modal-content px-6 pb-4">
+                                <h2 class="modal-title text-xl font-bold text-center">Add Task</h2>
+                                <form action="#">
+                                    <div class="form-group mb-4">
+                                        <label  for="task-title" class="block text-sm font-medium mb-1">Task Title:</label>
+                                        <input type="text" id="task-title" name="task-title" placeholder="Enter task title" class="form-control block w-full px-3 py-2 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                                    </div>
+                                    <div class="form-group mb-6">
+                                        <label for="task-description" class="block text-sm font-medium mb-1">Task Description:</label>
+                                        <textarea name="task-description" id="task-description" cols="30" rows="10" placeholder="Enter task description" class="form-control block w-full px-3 py-2 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                                    </div>
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-bold rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create Task</button>
+                                </form>
+                                <button id="close-modal-btn" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Close</button>
+                            </div>
+
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../public/js/scripts.js"></script>
+</body>
+</html>
+                                    

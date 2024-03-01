@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .dark-mode {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .dark-mode form {
+            background-color: #222;
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Settings</h2>
+        <form>
+            <label for="theme">Select Theme:</label>
+            <select id="theme" name="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                </select>
+
+                <label for="notifications">Notifications:</label>
+                <select id="notifications" name="notifications">
+                    <option value="enabled">Enabled</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+
+                <label for="language">Select Language:</label>
+                <select id="language" name="language">
+                    <option value="english">English</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="french">French</option>
+                </select>
+
+            </select>
+            <div id='account-password' class='group-wrap'>
+                <h3 class='heading'> Account Password </h3>
+
+                <p> Please enter the new password below to change your login password. </p>
+
+                <label for="email">Email:</label>
+            <input type="email" id="email" name="email">
+                <div class='row'>
+                    <div class='col-sm-4'>
+                        <form name="passwd" method='post' class=''>
+                            <div class='form-group'>
+                                <label class='control-label'>Current password</label> 
+                                <input type="password" class="form-control" name="pass" tabindex="1" autocomplete='off' placeholder='Enter current password'/>
+                                <span class='help-block'></span>
+                            </div>
+
+                            <div class='form-group'>
+                                <label class='control-label'>New password</label> 
+                                <input type="password" class="form-control" name="pass1" tabindex="2" autocomplete='off' placeholder='Enter new password'/>
+                                <span class='help-block'></span>
+                            </div>
+
+                            <div class='form-group'>
+                                <label class='control-label'>Re-type new password</label>
+                                <input type="password" class="form-control" name="pass2" tabindex="3" autocomplete='off' placeholder='Re-type new password'/> 
+                                <span class='help-block'></span>
+                            </div>
+            <input type="submit" value="Change">
+            
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const themeSelect = document.getElementById("theme");
+            const body = document.body;
+            const form = document.querySelector("form");
+
+            themeSelect.addEventListener("change", function() {
+                if (this.value === "dark") {
+                    body.classList.add("dark-mode");
+                    form.classList.add("dark-mode");
+                } else {
+                    body.classList.remove("dark-mode");
+                    form.classList.remove("dark-mode");
+                }
+            });
+        });
+    </script>
+</body>
+</html>

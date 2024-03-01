@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Tracking</title>
+    <style>
+        .calorie-tracker {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #total-calories {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="calorie-tracker">
+        <h2>Calorie Tracking</h2>
+        <label for="calories-input">Enter calories:</label>
+        <input type="number" id="calories-input">
+        <button onclick="addCalories()">Add Calories</button>
+        <p id="total-calories">Total calories consumed: <span id="calories">0</span></p>
+    </div>
+    <script>
+        let totalCalories = 0;
+
+        function addCalories() {
+            const caloriesInput = document.getElementById("calories-input");
+            const calories = parseFloat(caloriesInput.value);
+            if (!isNaN(calories)) {
+                totalCalories += calories;
+                document.getElementById("calories").textContent = totalCalories;
+                caloriesInput.value = "";
+            } else {
+                alert("Please enter a valid number for calories.");
+            }
+        }
+    </script>
+</body>
+</html>

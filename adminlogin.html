@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            background-image: url('6.jpg'); /* Replace with your image path or URL */
+            background-size: cover; /* Adjust according to your needs */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #74ce81;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 120%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .form-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .form-divider::before, .form-divider::after {
+            content: '';
+            display: inline-block;
+            border-top: 1px solid #ccc;
+            width: 45%;
+            margin: 0 10px;
+        }
+
+        .or-text {
+            color: #555;
+            background-color: #f4f4f4;
+            padding: 5px 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .logo {
+            position: absolute;
+            top: 140px;
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            width: 80px;
+            height: auto;
+        }
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            background-color: #2c3e50;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <form action="login.php" method="post">
+        <img src="snp.jpeg" alt="logo" class="logo">
+        <br><br><br>
+        <h2>Admin Login</h2>
+        <label for="signup-email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="abcd@gmail.com" required>
+
+        <!-- <label for="signup-password">Password:</label>
+        <input type="password" id="signup-password" name="signup-password" required> -->
+
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Strength Indicator</title>
+  <style>
+    #password-container {
+      position: relative;
+    }
+
+    #password-strength {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .weak {
+      color: #ff6347; /* Tomato */
+    }
+
+    .medium {
+      color: #ffa500; /* Orange */
+    }
+
+    .strong {
+      color: #008000; /* Green */
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 8px;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+
+    .toggle-password:hover {
+      color: #008000;
+    }
+  </style>
+  
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+ <script>
+    $(document).ready(function() {
+      $('#toggle-password').on('click', function() {
+        var passwordInput = $('#password');
+        var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+        passwordInput.attr('type', type);
+      });
+
+      $('#password').on('input', function() {
+        var password = $(this).val();
+        var strength = checkPasswordStrength(password);
+        updateStrengthIndicator(strength);
+      });
+
+      function checkPasswordStrength(password) {
+        // Your password strength checking logic here
+        // This is a simple example, you can implement more complex rules
+        var minLength = 8;
+        var minUpperCase = 1;
+        var minLowerCase = 1;
+        var minDigits = 1;
+
+        var upperCaseMatches = password.match(/[A-Z]/g) || [];
+        var lowerCaseMatches = password.match(/[a-z]/g) || [];
+        var digitMatches = password.match(/\d/g) || [];
+
+        var hasMinLength = password.length >= minLength;
+        var hasMinUpperCase = upperCaseMatches.length >= minUpperCase;
+        var hasMinLowerCase = lowerCaseMatches.length >= minLowerCase;
+        var hasMinDigits = digitMatches.length >= minDigits;
+
+        if (hasMinLength && hasMinUpperCase && hasMinLowerCase && hasMinDigits) {
+          return 'strong';
+        } else if ((hasMinLength && hasMinUpperCase && hasMinLowerCase) || (hasMinLength && hasMinDigits)) {
+          return 'medium';
+        } else {
+          return 'weak';
+        }
+      }
+
+      function updateStrengthIndicator(strength) {
+        $('#password-strength').show().removeClass().addClass(strength).text('Password Strength: ' + strength.charAt(0).toUpperCase() + strength.slice(1));
+      }
+    });
+  </script>
+</head>
+<body>
+  <div id="password-container">
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <span id="toggle-password" class="toggle-password">👁️</span>
+  </div>
+  
+  <div id="password-strength">Password Strength: <span class="weak">Weak</span></div>
+</body>
+</html>
+<br>
+<br>
+
+        <input type="submit" value="Sign In">
+        <div>
+            <span class="Don't have an account?">Don't have an account?<a href="adminreg.html">Sign up</a></span>
+        </div>
+        <br>
+        <br>
+    </form>
+    <footer>
+      &copy; 2024 Smart Home Nutrition Planner. All rights reserved.
+  </footer>
+  <script>
+    // Existing Firebase initialization code...
+
+    // Get form elements
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('signup-password');
+    const loginButton = document.getElementById('loginButton');
+
+    // Listen for login button clicks
+    loginButton.addEventListener('click', (e) => {
+        e.preventDefault();  // Prevent the form from submitting normally
+
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        // Sign in with email and password
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                // Signed in 
+                var user = userCredential.user;
+                alert('Successfully signed in!');
+            })
+            .catch((error) => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                alert('Error signing in: ' + errorMessage);
+            });
+    });
+</script>
+
+</body>
+</html>
