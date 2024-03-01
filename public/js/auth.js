@@ -25,7 +25,7 @@ function handleRegistration(event) {
    
       auth.createUserWithEmailAndPassword(email, password)
       .then((userCredential) => {
-        var user = auth.currentUser
+      //  var user = auth.currentUser
         // Add additional user data to Firestore
         console.log("User created: ", userCredential.user.uid);
 
