@@ -63,6 +63,7 @@
     "micromatch": "^4.0.5",
     "minimatch": "^9.0.3",
     "minipass": "^7.0.4",
+    "mysql": "^2.18.1",
     "mz": "^2.7.0",
     "nanoid": "^3.3.7",
     "node-cron": "^3.0.3",
