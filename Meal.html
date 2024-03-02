@@ -54,7 +54,7 @@
     </header>
         
     <section>
-        <a style="text-decoration:none" >Ingredients</a>
+        <a style="text-decoration:none" >`$`</a>
     </section>
     <div>
     <p>
@@ -67,7 +67,7 @@
     </p>
 </div>
     <section>
-        <a style="text-decoration:none" >Instructions</a>
+        <a style="text-decoration:none" >`${recipes}`</a>
     </section>
     <p>1. Cook the steak to your desired doneness.
         2. Slice the avocado and cherry tomatoes.
@@ -83,7 +83,6 @@ window.onload = async function() {
         const data = await response.json();
 
         const recipesContainer = document.getElementById('recipes-container');
-
         if (data && data.length > 0) {
             data.forEach(recipe => {
                 const recipeElement = document.createElement('div');
@@ -99,6 +98,5 @@ window.onload = async function() {
         console.error('Error fetching recommended recipes:', error);
     }
 };
-
 </script>
 </html>

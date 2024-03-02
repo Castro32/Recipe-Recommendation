@@ -1,14 +1,16 @@
+const form = document.getElementById('register-form');
+const signout = document.getElementById('signout');
 function handleRegistration(event) {
     event.preventDefault(); // Prevent the form from submitting normally
   
     // Get form values
-    const firstName = document.getElementById('First_Name').value;
-    const lastName = document.getElementById('Last_Name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const password = document.getElementById('password').value;
-    const registerForm = document.getElementById('register-form');
-    const signout = document.getElementById('signout');
+    const email = form['email'].value;
+    const password = form['password'].value;
+    const firstName = form['First_Name'].value;
+    const lastName = form['Last_Name'].value;
+    const phone = form['phone'].value;
+ 
+  
   
     // Create user object
     const userdata= {
@@ -17,19 +19,19 @@ function handleRegistration(event) {
       email: email,
       phone: phone,
       role: 'user',
-      profilePicture: '',
       last_login: Date.now()
     };
    
     // Create user with email and password
    
       auth.createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
+      .then((credential) => {
+        console.log(credential.user)
+        if (credential && credential.user) {
       //  var user = auth.currentUser
         // Add additional user data to Firestore
-        console.log("User created: ", userCredential.user.uid);
-
-        db.collection("userdocs").doc(userCredential.user.uid).set(userdata)
+        console.log("User created: ", credential.user.uid);
+        db.collection("userdocs").doc(credential.user.uid).set(userdata)
           .then(() => {
             // Handle successful registration
             alert("Registration successful!");
@@ -44,18 +46,22 @@ function handleRegistration(event) {
             registerError.textContent = err.message;
             alert("Registration failed. Please try again later.");
           });
-      })
+      }
+      }
+      )
       .catch((error) => {
         console.error("Error creating user: ", error);
         // Handle registration error
         alert("Registration failed. Please try again later.");
       });
 
-      signout.addEventListener('click', () => {
-        auth.signOut().then(() => {
-          console.log('user signed out');
-        });
-      });
+ 
       
   }
   
+
+  signout.addEventListener('click', () => {
+    auth.signOut().then(() => {
+      console.log('user signed out');
+    });
+  });
