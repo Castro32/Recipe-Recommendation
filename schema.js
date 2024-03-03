@@ -36,8 +36,4 @@ const userSchema = new mongoose.Schema({
 });
 
 
-<<<<<<< HEAD
 module.exports = mongoose.model('UserInfo', userSchema);
-=======
-module.exports = mongoose.model('UserInfo', userSchema);
->>>>>>> 6a34f4c679235a671586332f2ed792d00399f8d0

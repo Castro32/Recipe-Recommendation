@@ -12,6 +12,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const functions = firebase.functions();
 const db = firebase.firestore();
+
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 const settings = { timestampsInSnapshots: true };

@@ -70,6 +70,33 @@ app.get('/api/recommended-recipes', (req, res) => {
     }
   });
 });
+*/
+
+
+app.post('/api/user-data', async (req, res) => {
+  const newUser = new UserInfo(req.body);
+  const userId=newUser._id;
+
+  try {
+    
+    await newUser.save();
+    console.log('User data stored successfully');
+    res.sendStatus(201); 
+  } catch (err) {
+    console.error('Error storing user data:', err);
+    res.status(500).send('Error storing user data');
+  }
+});
+
+app.get('/api/user-info', async (req, res) => {
+  try {
+    const users = await UserInfo.find();
+    res.json(users);
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    res.status(500).send('Error fetching user data');
+  }
+});
 
 async function recommendRecipes() {
   try {
@@ -131,6 +158,97 @@ cron.schedule('*/2 * * * *', () => {
   recommendRecipes();
 });
 
-app.listen(8082, () => {
-  console.log('App is listening on port 8082');
+mongoose.connection.once('open',()=>{
+  console.log(`Connected Successfully to the Database: ${mongoose.connection.name}`)
+  app.listen(port, () => {
+    console.log(`app is running at localhost:${port}`);
+  });
+  })
+/*const express = require('express');
+const mysql = require('mysql'); 
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "baro"
 });
+
+db.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL database:', err);
+  } else {
+    console.log('Connected to MySQL database');
+  }
+});
+
+app.post('/api/user-data', (req, res) => {
+  // Log the user payload
+  console.log("User Payload:", req.body);
+
+  const {
+    gender,
+    age,
+    diet_type,
+    activity_lifestyle,
+    medical_history,
+    medical_details,
+    medical_details_choice,
+    weight,
+    height,
+    fitness_goal,
+  } = req.body;
+
+  const sql = "INSERT INTO cas (gender, age, diet_type, activity_lifestyle, medical_history, medical_details, medical_details_choice, weight, height, fitness_goal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  const values = [gender, age, diet_type, activity_lifestyle, medical_history, medical_details, medical_details_choice, weight, height, fitness_goal];
+
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error storing user data:', err);
+      res.status(500).send('Error storing user data');
+    } else {
+    //  console.log("User created:", result);
+
+      // Construct user details object
+      const userDetails = {
+        id: result.insertId,
+        gender,
+        age,
+        diet_type,
+        activity_lifestyle,
+        medical_history,
+        medical_details,
+        medical_details_choice,
+        weight,
+        height,
+        fitness_goal
+      };
+      app.get('/api/user-data', (req, res) => {
+        db.query("SELECT * FROM users", (err, result) => {
+          if (err) {
+            console.error('Error getting user data:', err);
+            res.status(500).send('Error getting user data');
+          } else {
+            console.log("User data:", result);
+            return res.status(200).json({ message: "User data retrieved successfully", users: result });
+          }
+        }
+      )})
+      
+       console.log("User created:", userDetails);
+      return res.status(201).json({ message: "User created successfully", user: userDetails });  
+    }
+  });
+});
+
+
+const PORT = process.env.PORT || 8082;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+*/
