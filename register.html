@@ -204,13 +204,14 @@
     <script>
         // Initialize Firebase
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+    apiKey: "AIzaSyCpd0Mwy_BudiA-z3KMsfrqw3nt3Gy7h6M",
+    authDomain: "native-functions-dd65b.firebaseapp.com",
+    projectId: "native-functions-dd65b",
+    storageBucket: "native-functions-dd65b.appspot.com",
+    messagingSenderId: "773232537571",
+    appId: "1:773232537571:web:68ab00cedad20c66397ad6"
+  };
+  
         firebase.initializeApp(firebaseConfig);
 
         const db = firebase.firestore();
@@ -254,7 +255,8 @@
           return  db.collection("used").doc(credential.user.uid).set({
           //   email: email,
            //  uid: credential.user.uid,
-               ...userdata
+           email: email,
+          ...userdata
            }
              )
              .then(() => {
@@ -267,8 +269,9 @@
              .catch((error) => {
                console.error("Error adding user data to Firestore: ", error);
                // Handle registration error
-               const registerError =form.querySelector('.error');
-               registerError.textContent = err.message;
+
+               const registerError = form.querySelector('.error');
+               registerError.textContent = error.message;
                alert("Registration failed. Please try again later.");
              });
          }
