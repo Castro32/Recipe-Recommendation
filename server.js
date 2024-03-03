@@ -1,13 +1,24 @@
 const express = require('express');
-const mysql = require('mysql');
+//const mysql = require('mysql');
 const cors = require('cors');
 const axios = require('axios');
 const cron = require('node-cron');
-
 const app = express();
-app.use(cors());
-app.use(express.json());
+require("dotenv").config();
+const mongoose=require('mongoose')
+const connectDB =require('./db')
+const port = process.env.PORT || 5050;
+const bodyParser = require("body-parser");
+const UserInfo=require('./schema')
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+app.use(bodyParser.json());
+
+// connect Database
+connectDB(); 
+/*
 const db = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -59,74 +70,103 @@ app.get('/api/recommended-recipes', (req, res) => {
     }
   });
 });
+*/
+
+
+app.post('/api/user-data', async (req, res) => {
+  const newUser = new UserInfo(req.body);
+  
+
+  try {
+    await newUser.save();
+    console.log('User data stored successfully');
+    res.sendStatus(201); // Created
+  } catch (err) {
+    console.error('Error storing user data:', err);
+    res.status(500).send('Error storing user data');
+  }
+});
+
+app.get('/api/user-info', async (req, res) => {
+  try {
+    const users = await UserInfo.find();
+    res.json(users);
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    res.status(500).send('Error fetching user data');
+  }
+});
 
 async function recommendRecipes() {
   try {
-    const query = "SELECT * FROM lusers";
-    db.query(query, async (err, results) => {
-      if (err) {
-        console.error('Error fetching user data:', err);
-        return;
-      }
+    const users = await UserInfo.find();
 
-      for (const userData of results) {
-        const prompt = `
-          Given the following user data:
-          - Gender: ${userData.Gender}
-          - Age: ${userData.Age}
-          - Weight: ${userData.Weight} lbs
-          - Height: ${userData.Height} inches
-          - Fitness Goal: ${userData.Fitness_Goal}
-          - Diet Type: ${userData.Diet_Type}
+    for (const userData of users) {
+      const prompt = `
+        Given the following user data:
+        - Gender: ${userData.gender}
+        - Age: ${userData.age}
+        - Weight: ${userData.weight} lbs
+        - Height: ${userData.height} inches
+        - Fitness Goal: ${userData.fitness_goal}
+        - Diet Type: ${userData.diet_type}
 
-          Please recommend a recipe for each day of the week that aligns with the user's preferences and goals.
-        `;
+        Please recommend a recipe for each day of the week that aligns with the user's preferences and goals.
+      `;
 
-        try {
-          const response = await axios.post(
-            'https://api.openai.com/v1/chat/completions',
-            {
-              model: 'gpt-3.5-turbo',
-              messages: [{ role: 'user', content: prompt }],
-              max_tokens: 500,
-              n: 1,
-              stop: null,
-              temperature: 0.7,
+      try {
+        // Call OpenAI API with optimized parameters (example, adjust as needed)
+        const response = await axios.post(
+          'https://api.openai.com/v1/chat/completions',
+          {
+            model: 'gpt-3.5-turbo',
+            messages: [{ role: 'user', content: prompt }],
+            max_tokens: 1500, // Allow for more detailed responses
+            n: 7, // Generate recipes for each day of the week
+            stop: null,
+            temperature: 0.7,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, // Use environment variable for security
             },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer  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', // Replace with your OpenAI API key
-              },
-            }
-          );
+          }
+        );
 
-          const recommendedRecipes = response.data.choices[0].message.content;
+        const recommendedRecipes = response.data.choices.map((choice) => choice.message.content);
 
-          const insertQuery = "INSERT INTO recommended_recipes (user_id, recipes) VALUES (?, ?)";
-          const insertValues = [userData.User_ID, recommendedRecipes];
-          db.query(insertQuery, insertValues, (err, result) => {
-            if (err) {
-              console.error('Error storing recommended recipes:', err);
-            } else {
-              console.log('Recommended recipes stored successfully for user:', userData.User_ID);
-            }
-          });
-        } catch (error) {
-          console.error('Error recommending recipes for user:', userData.User_ID, error.message);
-        }
+        await UserInfo.updateOne(
+          { _id: userData._id },
+          { $set: { recommended_recipes: recommendedRecipes } }
+        );
+
+        console.log(`Recommended recipes updated for user ${userData._id}`);
+      } catch (error) {
+        console.error('Error recommending recipes for user', userData._id, error.message);
       }
-    });
+    }
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error in recommendRecipes function:', error.message);
   }
 }
+
 
 cron.schedule('*/2 * * * *', () => {
   console.log('Running recipe recommendation');
   recommendRecipes();
 });
 
-app.listen(8082, () => {
-  console.log('App is listening on port 8082');
-});
+mongoose.connection.once('open',()=>{
+  console.log(`Connected Successfully to the Database: ${mongoose.connection.name}`)
+  app.listen(port, () => {
+    console.log(`app is running at localhost:${port}`);
+  });
+  })
+
+
+
+
+
+
+
