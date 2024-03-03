@@ -10,6 +10,15 @@ const connectDB =require('./db')
 const port = process.env.PORT || 5050;
 const bodyParser = require("body-parser");
 const UserInfo=require('./schema')
+const admin = require('firebase-admin');
+// Initialize Firebase Admin SDK
+const serviceAccount = require('./native-functions-dd65b-firebase-adminsdk-1x0vr-19c118f2a5.json')
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  ignoreUndefinedProperties: true, 
+  databaseURL: 'default',
+});
+const db = admin.firestore();
 
 
 app.use(express.json());
@@ -76,8 +85,10 @@ app.get('/api/recommended-recipes', (req, res) => {
 
 app.post('/api/user-data', async (req, res) => {
 
+
+ // const {name, age, gender, height, weight, goal} = req.body;
   // Create new user object
-  const newUser = new UserInfo({
+  const user = new UserInfo({
     _id: new mongoose.Types.ObjectId(),  
     gender: req.body.gender,
     age: req.body.age,
@@ -91,13 +102,29 @@ app.post('/api/user-data', async (req, res) => {
   });
 
   try {
-    // Save user to database
-    await newUser.save();
-
+      
+  const savedUser = await user.save(); 
+  
     // Send success response 
-    res.sendStatus(201);
+ //   res.sendStatus(201);
     
-    console.log('User data stored successfully', newUser);
+    console.log('User data stored successfully', savedUser._id);
+  res.status(201).json({ message: "User created successfully", user: savedUser });
+  // Get user details
+//const userDetails = await UserInfo.findById(savedUser._id);
+
+//console.log('User details:', userDetails);
+  // Recommend recipes
+//const recipes = await recommendRecipes(userDetails);
+
+
+  // Save recipes
+ // await db.collection('recipes').add({
+  //  userId: userDetails._id,
+  //  recipes
+  //});
+
+  //console.log('Recipes saved to Firestore');
 
   } catch (error) {
 
@@ -106,12 +133,12 @@ app.post('/api/user-data', async (req, res) => {
 
     console.error('Error storing user data:', error); 
   }
-
 });
 
 app.get('/api/user-info', async (req, res) => {
   try {
     const users = await UserInfo.find();
+    console.log('User data:', users);
     res.json(users);
   } catch (err) {
     console.error('Error fetching user data:', err);
@@ -119,10 +146,10 @@ app.get('/api/user-info', async (req, res) => {
   }
 });
 
-const recipeSchema = require('./schema')
 async function recommendRecipes() {
   try {
     const users = await UserInfo.find();
+    console.log('Users:', users)
 
     for (const userData of users) {
       const prompt = `Please recommend 7 recipes, one for each day of the week, that meet the following preferences:
@@ -155,12 +182,12 @@ async function recommendRecipes() {
           {
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, // Use environment variable for security
+              'Authorization': `Bearer ${process.env.OA_API_KEY}`, // Use environment variable for security
             },
           }
         );
-        const recommendedRecipes = response.data.choices.map((choice) => choice.message.content);
-     
+        const recommendedRecipes =  response.data.choices[0].message.content;
+
   
         const recipesRef = db.collection('recipes').doc(userData.userId);
         await recipesRef.set({ recipes: recommendedRecipes });
@@ -173,7 +200,6 @@ async function recommendRecipes() {
       console.error('Error:', error.message);
     }
   }
-  
   
 /*
         await recipeSchema.updateOne(
