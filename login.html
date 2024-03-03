@@ -187,6 +187,7 @@
     messagingSenderId: "773232537571",
     appId: "1:773232537571:web:68ab00cedad20c66397ad6"
   };
+
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const functions = firebase.functions();
@@ -196,13 +197,11 @@
   const settings = { timestampsInSnapshots: true };
   db.settings(settings);
 </script>
-
  <script>   
  
    
    function handleSubmit(event) {
   event.preventDefault(); // Prevent the form from submitting normally
-
     // Get form elements
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -227,6 +226,18 @@
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 alert('Error signing in: ' + errorMessage);
+            });
+
+            //onauthstatechanged
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    // User is signed in
+                    var uid = user.uid;
+                    console.log('User is signed in');
+                } else {
+                    // User is signed out
+                    console.log('User is signed out');
+                }
             });
     });
 }

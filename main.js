@@ -18,7 +18,6 @@ const provider = new firebase.auth.GoogleAuthProvider();
 const settings = { timestampsInSnapshots: true };
 db.settings(settings);
 
-
 // Reference messages collection
 var messagesRef = firebase.database().ref('messages');
 

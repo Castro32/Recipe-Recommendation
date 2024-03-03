@@ -4,19 +4,20 @@ function handleRegistration(event) {
     event.preventDefault(); // Prevent the form from submitting normally
   
     // Get form values
-    const email = form['email'].value;
-    const password = form['password'].value;
-    const firstName = form['First_Name'].value;
-    const lastName = form['Last_Name'].value;
-    const phone = form['phone'].value;
+    const email = form.email.value;
+  const password = form.password.value; 
+
+  const firstName = form.First_Name.value;
+  const lastName = form.Last_Name.value;
+
+  const phone = form.phone.value;
  
-  
   
     // Create user object
     const userdata= {
       firstName: firstName,
       lastName: lastName,
-      email: email,
+     
       phone: phone,
       role: 'user',
       last_login: Date.now()
@@ -31,11 +32,19 @@ function handleRegistration(event) {
       //  var user = auth.currentUser
         // Add additional user data to Firestore
         console.log("User created: ", credential.user.uid);
-        db.collection("userdocs").doc(credential.user.uid).set(userdata)
+       return  db.collection("users").doc(credential.user.uid).set({
+       //   email: email,
+        //  uid: credential.user.uid,
+        firstName,
+        lastName,
+        email,
+        phone, 
+        }
+          )
           .then(() => {
             // Handle successful registration
             alert("Registration successful!");
-            registerForm.reset();
+            form.reset();
             // Redirect to login page after successful registration
             window.location.href = 'login.html';
           })
