@@ -98,6 +98,60 @@
             cursor: pointer;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+       $(document).ready(function() {
+         $('.toggle-password').on('click', function() {
+           var passwordInput = $(this).siblings('input');
+                 var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+                   passwordInput.attr('type', type);
+                    });
+             
+               $('#password, #confirm-password').on('input', function() {
+                      var password = $('#password').val();
+                       var confirmPassword = $('#confirm-password').val();
+             
+                       if (password === confirmPassword) {
+                                 $('#confirm-password-match').text('Passwords match').css('color', 'green');
+                             } else {
+                                 $('#confirm-password-match').text('Passwords do not match').css('color', 'red');
+                             }
+             
+                             var strength = checkPasswordStrength(password);
+                             updateStrengthIndicator(strength);
+                         });
+             
+                         function checkPasswordStrength(password) {
+                             // Your password strength checking logic here
+                             // This is a simple example, you can implement more complex rules
+                             var minLength = 8;
+                             var minUpperCase = 1;
+                             var minLowerCase = 1;
+                             var minDigits = 1;
+             
+                             var upperCaseMatches = password.match(/[A-Z]/g) || [];
+                             var lowerCaseMatches = password.match(/[a-z]/g) || [];
+                             var digitMatches = password.match(/\d/g) || [];
+             
+                             var hasMinLength = password.length >= minLength;
+                             var hasMinUpperCase = upperCaseMatches.length >= minUpperCase;
+                             var hasMinLowerCase = lowerCaseMatches.length >= minLowerCase;
+                             var hasMinDigits = digitMatches.length >= minDigits;
+             
+                             if (hasMinLength && hasMinUpperCase && hasMinLowerCase && hasMinDigits) {
+                                 return 'strong';
+                             } else if ((hasMinLength && hasMinUpperCase && hasMinLowerCase) || (hasMinLength && hasMinDigits)) {
+                                 return 'medium';
+                             } else {
+                                 return 'weak';
+                             }
+                         }
+             
+                         function updateStrengthIndicator(strength) {
+                             $('#password-strength').show().removeClass().addClass(strength).text('Password Strength: ' + strength.charAt(0).toUpperCase() + strength.slice(1));
+                         }
+                     });
+                 </script>
 </head>
 <body>
     <form id="register-form" class="contact-section" onsubmit="handleRegistration(event)">
@@ -163,60 +217,76 @@
         const auth = firebase.auth();
     </script>
 
-    <script>
-        // Function to toggle password visibility
-        function togglePasswordVisibility(inputId) {
-            const passwordInput = document.getElementById(inputId);
-            const toggleButton = document.querySelector(`[data-target="${inputId}"]`);
 
-            // Toggle the type attribute of the password input between 'password' and 'text'
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+<script>
+    const form = document.getElementById('register-form');
+   const signout = document.getElementById('signout');
+   function handleRegistration(event) {
+       event.preventDefault(); // Prevent the form from submitting normally
+     
+       // Get form values
+       const email = form.email.value;
+     const password = form.password.value; 
+     const firstName = form.First_Name.value;
+     const lastName = form.Last_Name.value;
+     const phone = form.phone.value;
+    
+     
+       // Create user object
+       const userdata= {
+         firstName: firstName,
+         lastName: lastName,
+           email: email,
+         phone: phone,
+         role: 'user',
+         last_login: Date.now()
+       };
+      
+       // Create user with email and password
+      
+         auth.createUserWithEmailAndPassword(email, password)
+         .then((credential) => {
+           console.log(credential.user)
+           if (credential && credential.user) {
+         //  var user = auth.currentUser
+           // Add additional user data to Firestore
+           console.log("User created: ", credential.user.uid);
+          return  db.collection("used").doc(credential.user.uid).set({
+          //   email: email,
+           //  uid: credential.user.uid,
+               ...userdata
+           }
+             )
+             .then(() => {
+               // Handle successful registration
+               alert("Registration successful!");
+               form.reset();
+               // Redirect to login page after successful registration
+               window.location.href = 'login.html';
+             })
+             .catch((error) => {
+               console.error("Error adding user data to Firestore: ", error);
+               // Handle registration error
+               const registerError =form.querySelector('.error');
+               registerError.textContent = err.message;
+               alert("Registration failed. Please try again later.");
+             });
+         }
+         }
+         )
+         .catch((error) => {
+           console.error("Error creating user: ", error);
+           // Handle registration error
+           alert("Registration failed. Please try again later.");
+         });
+     }
 
-            // Change the icon based on the password visibility
-            toggleButton.textContent = type === 'password' ? '👁️' : '🙈';
-        }
-    </script>
-
-    <script>
-        // Function to handle user registration
-        function handleRegistration(event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-
-            // Get form values
-            const firstName = document.getElementById('First_Name').value;
-            const lastName = document.getElementById('Last_Name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
-
-            // Perform your registration logic here
-            // Example: Create user with email and password
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Add user details to Firestore
-                    return db.collection("users").doc(userCredential.user.uid).set({
-                        firstName: firstName,
-                        lastName: lastName,
-                        email: email,
-                        phone: phone,
-                        role: 'user',
-                        last_login: Date.now()
-                    });
-                })
-                .then(() => {
-                    // Handle successful registration
-                    alert("Registration successful!");
-                    document.getElementById('register-form').reset();
-                    // Redirect to login page after successful registration
-                    window.location.href = 'login.html';
-                })
-                .catch((error) => {
-                    console.error("Error creating user: ", error);
-                    // Handle registration error
-                    alert("Registration failed. Please try again later.");
-                });
-        }
-    </script>
+   
+     signout.addEventListener('click', () => {
+       auth.signOut().then(() => {
+         console.log('user signed out');
+       });
+     });
+   </script>
 </body>
 </html>
