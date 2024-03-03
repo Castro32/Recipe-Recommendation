@@ -64,6 +64,8 @@
     "micromatch": "^4.0.5",
     "minimatch": "^9.0.3",
     "minipass": "^7.0.4",
+    "mongod": "^2.0.0",
+    "mongoose": "^8.2.0",
     "mysql": "^2.18.1",
     "mz": "^2.7.0",
     "nanoid": "^3.3.7",

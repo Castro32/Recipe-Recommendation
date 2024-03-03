@@ -1,0 +1,16 @@
+
+###code for post request
+###hit the stk post request
+ POST http://localhost:3000/register
+
+Authorization : Bearer
+Content-Type : application/json
+
+{
+  "gender": "male",
+  "age": 30,
+  "diet_type": "vegetarian",
+  "fitness_goals": "weight loss",
+  "active_links": ["link1", "link2"]
+}
+

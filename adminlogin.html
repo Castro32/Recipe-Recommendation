@@ -300,10 +300,10 @@ function handleSubmit(event) {
     .then((result) => {
       if (result.data.isAdmin) {
         // User is an admin, redirect to the admin dashboard
-        window.location.href = '../components/sidebar.html';
+        window.location.href = 'landingpage.html';
       } else {
         // User is not an admin, redirect to the regular dashboard
-        window.location.href = 'landingpage.html';
+        window.location.href = 'sidebar.html';
       }
     })
     .catch((error) => {

@@ -300,15 +300,20 @@
         </div>
         <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                <div class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
-                    <div class="flex justify-between mb-6">
-                        <div>
-                            <div class="text-2xl font-semibold mb-1">10</div>
-                            <div class="text-sm font-medium text-gray-400">Active Users</div>
-                            <button>
-                                <a href="reports.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Create Report</a>
-                            </button>  
-                        </div>
+        
+              <div id="active-users" class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
+                <div class="flex justify-between mb-6">
+                  <div>
+                    <div class="text-2xl font-semibold mb-1" id="active-user-count">Loading...</div>
+                    <div class="text-sm font-medium text-gray-400">Active Users</div>
+                    <button>
+                      <a href="reports.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Create Report</a>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex items-center">
+                  </div>
+              </div>
                         <div class="dropdown">
                             <button type="button" class="dropdown-toggle text-gray-400 hover:text-gray-600"><i class="ri-more-fill"></i></button>
                             <ul class="dropdown-menu shadow-md shadow-black/5 z-30 hidden py-1.5 rounded-md bg-white border border-gray-100 w-full max-w-[140px]">
@@ -413,7 +418,6 @@
                         <button type="button" data-tab="order" data-tab-page="completed" class="bg-gray-50 text-sm font-medium text-gray-400 py-2 px-4 hover:text-gray-600">Completed</button>
                         <button type="button" data-tab="order" data-tab-page="canceled" class="bg-gray-50 text-sm font-medium text-gray-400 py-2 px-4 rounded-tr-md rounded-br-md hover:text-gray-600">Canceled</button>
                     </div>
-
                   --> 
                     <div class="overflow-x-auto">
                         <table class="w-full min-w-[540px]" data-tab-for="order" data-page="active">
@@ -633,11 +637,26 @@ db.collection("reports").orderBy("createdAt", "desc").onSnapshot((querySnapshot)
 
 </script>
 
+<script>
+  // Get active user count
+  const activeUsersRef = db.collection('userdoc').where('isActive', '==', true);
+  activeUsersRef.onSnapshot((snapshot) => {
+    const activeUserCount = snapshot.size;
+    document.getElementById('active-user-count').textContent = activeUserCount;
+  });
+
+  
+  // Get total user count
+  const usersRef = db.collection('userdoc');
+  usersRef.onSnapshot((snapshot) => {
+    const totalUserCount = snapshot.size;
+    document.getElementById('total-user-count').textContent = totalUserCount;
+  });
+</script>
     <script src="dist/js/script.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.com/libraries/Chart.js"></script>
-    
 </body>
 </html>
