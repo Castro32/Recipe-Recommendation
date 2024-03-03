@@ -205,10 +205,8 @@ function handleRegistration(event) {
     // Get form values
     const email = form.email.value;
   const password = form.password.value; 
-
   const firstName = form.First_Name.value;
   const lastName = form.Last_Name.value;
-
   const phone = form.phone.value;
  
   
@@ -216,7 +214,7 @@ function handleRegistration(event) {
     const userdata= {
       firstName: firstName,
       lastName: lastName,
-     
+        email: email,
       phone: phone,
       role: 'user',
       last_login: Date.now()
@@ -231,13 +229,10 @@ function handleRegistration(event) {
       //  var user = auth.currentUser
         // Add additional user data to Firestore
         console.log("User created: ", credential.user.uid);
-       return  db.collection("users").doc(credential.user.uid).set({
+       return  db.collection("used").doc(credential.user.uid).set({
        //   email: email,
         //  uid: credential.user.uid,
-        firstName,
-        lastName,
-        email,
-        phone, 
+            ...userdata
         }
           )
           .then(() => {
