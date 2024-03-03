@@ -153,7 +153,56 @@
   <div id="password-container">
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required>
-    <span id="toggle-password" class="toggle-password">👁️</span>
+      <span id="toggle-password" class="toggle-password">👁️</span>
+
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('#toggle-password').on('click', function() {
+        var passwordInput = $('#password');
+        var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+        passwordInput.attr('type', type);
+      });
+
+      $('#password').on('input', function() {
+        var password = $(this).val();
+        var strength = checkPasswordStrength(password);
+        updateStrengthIndicator(strength);
+      });
+
+      function checkPasswordStrength(password) {
+        // Your password strength checking logic here
+        // This is a simple example, you can implement more complex rules
+        var minLength = 8;
+        var minUpperCase = 1;
+        var minLowerCase = 1;
+        var minDigits = 1;
+
+        var upperCaseMatches = password.match(/[A-Z]/g) || [];
+        var lowerCaseMatches = password.match(/[a-z]/g) || [];
+        var digitMatches = password.match(/\d/g) || [];
+
+        var hasMinLength = password.length >= minLength;
+        var hasMinUpperCase = upperCaseMatches.length >= minUpperCase;
+        var hasMinLowerCase = lowerCaseMatches.length >= minLowerCase;
+        var hasMinDigits = digitMatches.length >= minDigits;
+
+        if (hasMinLength && hasMinUpperCase && hasMinLowerCase && hasMinDigits) {
+          return 'strong';
+        } else if ((hasMinLength && hasMinUpperCase && hasMinLowerCase) || (hasMinLength && hasMinDigits)) {
+          return 'medium';
+        } else {
+          return 'weak';
+        }
+      }
+
+      function updateStrengthIndicator(strength) {
+        $('#password-strength').show().removeClass().addClass(strength).text('Password Strength: ' + strength.charAt(0).toUpperCase() + strength.slice(1));
+      }
+    });
+    
+  </script>
+    
   </div>
   
   <div id="password-strength">Password Strength: <span class="weak">Weak</span></div>

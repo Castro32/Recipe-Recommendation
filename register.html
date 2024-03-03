@@ -1,91 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Authentication</title>
-<style>
-    body {
-        font-family: 'Times New Roman', Times, serif, sans-serif;
-        background-image: url('7.jpg'); 
-        background-size: cover; 
-        margin: 0;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-    }
-    form {
-        background-color: #71df9d;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        width: 100%;
-        position: relative; /* Added position relative */
-    }
-
-    h2 {
-        text-align: center;
-        color: #333;
-    }
-
-    label {
-        display: block;
-        margin: 10px 0 5px;
-        color: #555;
-    }
-
-    input {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 15px;
-        box-sizing: border-box;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    input[type="submit"] {
-        background-color: #4CAF50;
-        color: #fff;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #45a049;
-    }
-
-    .form-divider {
-        text-align: center;
-        margin: 20px 0;
-        position: relative;
-    }
-
-    .form-divider::before, .form-divider::after {
-        content: '';
-        display: inline-block;
-        border-top: 1px solid #ccc;
-        width: 45%;
-        margin: 0 10px;
-    }
-
-    .or-text {
-        color: #555;
-        background-color: #f4f4f4;
-        padding: 5px 10px;
-        position: relative;
-        z-index: 1;
-    }
-    .logo {
-    position: absolute;
-    top: 10px;
-    left: 50%; /* Center horizontally */
-    transform: translateX(-50%); /* Center horizontally */
-    width: 80px;
-    height: auto;
-}
-footer {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            background-image: url('7.jpg');
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        form {
+            background-color: #71df9d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            position: relative; /* Added position relative */
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .form-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .form-divider::before, .form-divider::after {
+            content: '';
+            display: inline-block;
+            border-top: 1px solid #ccc;
+            width: 45%;
+            margin: 0 10px;
+        }
+        .or-text {
+            color: #555;
+            background-color: #f4f4f4;
+            padding: 5px 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 50%; /* Center horizontally */
+            transform: translateX(-50%); /* Center horizontally */
+            width: 80px;
+            height: auto;
+        }
+        footer {
             text-align: center;
             padding: 1em 0;
             background-color: #2c3e50;
@@ -94,7 +86,18 @@ footer {
             bottom: 0;
             width: 100%;
         }
-</style>
+        /* Password toggle styles */
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <form id="register-form" class="contact-section" onsubmit="handleRegistration(event)">
@@ -116,158 +119,104 @@ footer {
         <div class="password-container">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
-            <span class="toggle-password">👁️</span>
-          </div>
-          <div class="password-container">
+            <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+        </div>
+
+        <div class="password-container">
             <label for="confirm-password">Confirm Password:</label>
             <input type="password" id="confirm-password" name="confirm-password" required>
-            <span class="toggle-password">👁️</span>
-          </div>
-      
-          <input type="submit" value="Sign Up">
-          <div id="password-strength">Password Strength: <span class="weak">Weak</span></div>
-          <div id="confirm-password-match"></div>
+            <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password')">👁️</span>
+        </div>
 
-        <!-- <label for="signup-password">Password:</label>
-        <input type="password" id="signup-password" name="signup-password" required> -->
+        <input type="submit" value="Sign Up">
+        <div id="password-strength">Password Strength: <span class="weak">Weak</span></div>
+        <div id="confirm-password-match"></div>
 
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Password Strength Checker</title>
-
-  <style>
-                .password-container {
-                    position: relative;
-                }
-                .toggle-password {
-                    position: absolute;
-                    right: 10px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    cursor: pointer;
-                }
-                .weak {
-                    color: red;
-                }
-                .medium {
-                    color: orange;
-                }
-                .strong {
-                    color: green;
-                }
-            </style>
-        </head>
-        <body>
-            <div>
-              <span class="Already have an account?">Already have an account?<a href="login.html">Sign in</a></span>
-          </div>
+        <div>
+            <span class="Already have an account?">Already have an account?<a href="login.html">Sign in</a></span>
+        </div>
         <br>
         <br>
     </form>
     <footer>
         &copy; 2024 Smart Home Nutrition Planner. All rights reserved.
     </footer>
-         
+
     <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-functions.js"></script>
-    
-<script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCpd0Mwy_BudiA-z3KMsfrqw3nt3Gy7h6M",
-      authDomain: "native-functions-dd65b.firebaseapp.com",
-      projectId: "native-functions-dd65b",
-      storageBucket: "native-functions-dd65b.appspot.com",
-      messagingSenderId: "773232537571",
-      appId: "1:773232537571:web:68ab00cedad20c66397ad6"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const functions = firebase.functions();
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-    const provider = new firebase.auth.GoogleAuthProvider();
-    const settings = { timestampsInSnapshots: true };
-    db.settings(settings);
-  </script>
 
-<script>
- const form = document.getElementById('register-form');
-const signout = document.getElementById('signout');
-function handleRegistration(event) {
-    event.preventDefault(); // Prevent the form from submitting normally
-  
-    // Get form values
-    const email = form.email.value;
-  const password = form.password.value; 
-  const firstName = form.First_Name.value;
-  const lastName = form.Last_Name.value;
-  const phone = form.phone.value;
- 
-  
-    // Create user object
-    const userdata= {
-      firstName: firstName,
-      lastName: lastName,
-        email: email,
-      phone: phone,
-      role: 'user',
-      last_login: Date.now()
-    };
-   
-    // Create user with email and password
-   
-      auth.createUserWithEmailAndPassword(email, password)
-      .then((credential) => {
-        console.log(credential.user)
-        if (credential && credential.user) {
-      //  var user = auth.currentUser
-        // Add additional user data to Firestore
-        console.log("User created: ", credential.user.uid);
-       return  db.collection("used").doc(credential.user.uid).set({
-       //   email: email,
-        //  uid: credential.user.uid,
-            ...userdata
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+    </script>
+
+    <script>
+        // Function to toggle password visibility
+        function togglePasswordVisibility(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleButton = document.querySelector(`[data-target="${inputId}"]`);
+
+            // Toggle the type attribute of the password input between 'password' and 'text'
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Change the icon based on the password visibility
+            toggleButton.textContent = type === 'password' ? '👁️' : '🙈';
         }
-          )
-          .then(() => {
-            // Handle successful registration
-            alert("Registration successful!");
-            form.reset();
-            // Redirect to login page after successful registration
-            window.location.href = 'login.html';
-          })
-          .catch((error) => {
-            console.error("Error adding user data to Firestore: ", error);
-            // Handle registration error
-            const registerError =form.querySelector('.error');
-            registerError.textContent = err.message;
-            alert("Registration failed. Please try again later.");
-          });
-      }
-      }
-      )
-      .catch((error) => {
-        console.error("Error creating user: ", error);
-        // Handle registration error
-        alert("Registration failed. Please try again later.");
-      });
+    </script>
 
- 
-      
-  }
-  
+    <script>
+        // Function to handle user registration
+        function handleRegistration(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
 
-  signout.addEventListener('click', () => {
-    auth.signOut().then(() => {
-      console.log('user signed out');
-    });
-  });
-</script>
+            // Get form values
+            const firstName = document.getElementById('First_Name').value;
+            const lastName = document.getElementById('Last_Name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+
+            // Perform your registration logic here
+            // Example: Create user with email and password
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Add user details to Firestore
+                    return db.collection("users").doc(userCredential.user.uid).set({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        phone: phone,
+                        role: 'user',
+                        last_login: Date.now()
+                    });
+                })
+                .then(() => {
+                    // Handle successful registration
+                    alert("Registration successful!");
+                    document.getElementById('register-form').reset();
+                    // Redirect to login page after successful registration
+                    window.location.href = 'login.html';
+                })
+                .catch((error) => {
+                    console.error("Error creating user: ", error);
+                    // Handle registration error
+                    alert("Registration failed. Please try again later.");
+                });
+        }
+    </script>
 </body>
 </html>
