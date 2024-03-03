@@ -42,7 +42,7 @@ module.exports = mongoose.model('UserInfo', userSchema);
 
 ///recommended Recipees Schema
 //should contain ingredients and instructions to cook it 
-const recipeSchema = new mongoose.Schema({
+/*const recipeSchema = new mongoose.Schema({
 
     name: {
       type: String,
@@ -94,3 +94,4 @@ const recipeSchema = new mongoose.Schema({
   });
   
   module.exports = mongoose.model('Recipe', recipeSchema);
+  */
