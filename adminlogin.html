@@ -210,7 +210,8 @@
 <br>
 <br>
 
-        <input type="submit" value="Sign In">
+        
+        <button style="background-color: green; color: #ffffff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" href='sidebar.html'>Sign In</button>
         <div>
             <span class="Don't have an account?">Don't have an account?<a href="adminreg.html">Sign up</a></span>
         </div>
@@ -266,7 +267,7 @@ function handleSubmit(event) {
     .then((result) => {
       if (result.data.isAdmin) {
         // User is an admin, redirect to the admin dashboard
-        window.location.href = 'dashboard.html';
+        window.location.href = 'sidebar.html';
       } else {
         // User is not an admin, redirect to the regular dashboard
         window.location.href = 'landingpage.html';
@@ -300,10 +301,10 @@ function handleSubmit(event) {
     .then((result) => {
       if (result.data.isAdmin) {
         // User is an admin, redirect to the admin dashboard
-        window.location.href = 'landingpage.html';
+        window.location.href = 'sidebar.html';
       } else {
         // User is not an admin, redirect to the regular dashboard
-        window.location.href = 'sidebar.html';
+        window.location.href = 'landingpage.html';
       }
     })
     .catch((error) => {
