@@ -99,30 +99,52 @@
     </style>
 </head>
 <body>
-    <form action="http://localhost:8082/api/user-data" method="post">
+    <form action="#" method="post">
         <h2>User Information</h2>
         <label for="gender">Gender:</label>
-        <input type="text"  id="gender" name="gender" required>
-    
+        <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
 
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
 
-        <label for="gender">Diet Type:</label>
-        <input type="gender" id="gender" name="gender"  required>
-         
-        
+        <label for="diet-type">Diet Type:</label>
+        <select id="diet-type" name="diet-type">
+            <option value="Normal">Normal</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Vegan">Vegan</option>
+        </select>
 
         <label for="activity-lifestyle">Activity Lifestyle:</label>
-        <input type="gender" id="gender" name="gender" required>
+        <select id="activity-lifestyle" name="activity-lifestyle">
+            <option value="Active">Active</option>
+            <option value="Sedentary">Sedentary</option>
+        </select>
 
-        
-    
         <label for="medical-history">Medical History:</label>
-        <input  type="gender" id="gender" name="gender">
-         
+        <select id="medical-history" name="medical-history" onchange="showMedicalDetails()">
+            <option value="None">None</option>
+            <option value="Allergic">Allergic</option>
+            <option value="Heart Condition">Heart Condition</option>
+            <!-- Add more options as needed -->
+        </select>
 
-        
+        <div class="medical-history-details" id="medical-details-container">
+            <label for="medical-details">Details:</label>
+            <textarea id="medical-details" name="medical-details" class="medical-history-details"></textarea>
+
+            <div class="radio-buttons">
+                <label for="yes">Yes</label>
+                <input type="radio" id="yes" name="medical-details-choice" value="Yes">
+                
+                <label for="no">No</label>
+                <input type="radio" id="no" name="medical-details-choice" value="No">
+            </div>
+        </div>
+
         <label for="weight">Weight (kg):</label>
         <input type="number" id="weight" name="weight" required>
 
@@ -133,8 +155,11 @@
         <input type="number" id="contact" name="contact" placeholder="+254..." required> -->
 
         <label for="fitness-goal">Fitness Goal:</label>
-        <input type="gender" id="gender" name="gender">
-      
+        <select id="fitness-goal" name="fitness-goal">
+            <option value="weight-loss">Weight Loss</option>
+            <option value="muscle-gain">Muscle Gain</option>
+            <option value="maintain">Maintain</option>
+        </select>
 
         <input type="submit" value="submit">
         <script>
