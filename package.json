@@ -66,6 +66,10 @@
     "minipass": "^7.0.4",
     "mongod": "^2.0.0",
     "mongoose": "^8.2.0",
+<<<<<<< HEAD
+=======
+    "moongoose": "^0.0.5",
+>>>>>>> 6a34f4c679235a671586332f2ed792d00399f8d0
     "mysql": "^2.18.1",
     "mz": "^2.7.0",
     "nanoid": "^3.3.7",
@@ -109,6 +113,7 @@
     "to-regex-range": "^5.0.1",
     "ts-interface-checker": "^0.1.13",
     "util-deprecate": "^1.0.2",
+    "uuid": "^9.0.1",
     "which": "^2.0.2",
     "wrap-ansi": "^8.1.0",
     "wrap-ansi-cjs": "^7.0.0",
