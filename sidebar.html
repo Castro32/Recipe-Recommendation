@@ -113,34 +113,8 @@
                                         </div>
                                     </a>
                                 </li>
-                                <!--                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">Create landing page</div>
-                                            <div class="text-[11px] text-gray-400">$345</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">Create landing page</div>
-                                            <div class="text-[11px] text-gray-400">$345</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
-                                        <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
-                                        <div class="ml-2">
-                                            <div class="text-[13px] text-gray-600 font-medium truncate group-hover:text-blue-500">Create landing page</div>
-                                            <div class="text-[11px] text-gray-400">$345</div>
-                                        </div>
-                                    </a>
-                                </li>
-                                -->
+                             
+                          
 
                                 <li>
                                     <a href="#" class="py-2 px-4 flex items-center hover:bg-gray-50 group">
@@ -279,7 +253,7 @@
                             </ul>
                         </div>
                     </div>
-                </li> -->  
+                </li> 
                 <li class="dropdown ml-3">
                     <button type="button" class="dropdown-toggle flex items-center">
                         <img src="https://placehold.co/32x32" alt="" class="w-8 h-8 rounded block object-cover align-middle">
@@ -304,7 +278,7 @@
               <div id="active-users" class="bg-white rounded-md border border-gray-100 p-6 shadow-md shadow-black/5">
                 <div class="flex justify-between mb-6">
                   <div>
-                    <div class="text-2xl font-semibold mb-1" id="active-user-count">Loading...</div>
+                    <div class="text-2xl font-semibold mb-1" id="total-user-count">Loading...</div>
                     <div class="text-sm font-medium text-gray-400">Active Users</div>
                     <button>
                       <a href="reports.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Create Report</a>
@@ -420,6 +394,19 @@
                     </div>
                   --> 
                     <div class="overflow-x-auto">
+                        <table>
+                            <thead>
+                              <tr>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Tasks</th> 
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <!-- Rows will be appended here -->
+                            </tbody>
+                          </table>
+  <!--
                         <table class="w-full min-w-[540px]" data-tab-for="order" data-page="active">
                             <thead>
                                 <tr>
@@ -517,7 +504,7 @@
                                 </tr>
                             </tbody>
                         </table>
-
+                    -->
                     </div>
                 </div>
                 <div class="bg-white border border-gray-100 shadow-md shadow-black/5 p-6 rounded-md">
@@ -636,23 +623,60 @@ db.collection("reports").orderBy("createdAt", "desc").onSnapshot((querySnapshot)
 });
 
 </script>
+<script>
+// Fetch reports 
+db.collection("reports").orderBy("createdAt", "desc").onSnapshot(querySnapshot => {
 
+  // Get table body element
+  const tableBody = document.querySelector("tbody"); 
+
+  querySnapshot.forEach(doc => {
+    
+    const report = doc.data();
+
+    // Create table row
+    const row = document.createElement("tr");
+
+    // Create table cells
+    const titleCell = document.createElement("td");
+    titleCell.textContent = report.title;
+
+    const descriptionCell = document.createElement("td"); 
+    descriptionCell.textContent = report.description;
+
+    const tasksCell = document.createElement("td");
+    tasksCell.innerHTML = report.taskItems.map(task => `<li>${task}</li>`).join("");
+
+    // Append cells to row  
+    row.appendChild(titleCell);
+    row.appendChild(descriptionCell); 
+    row.appendChild(tasksCell);
+
+    // Append row to table
+    tableBody.appendChild(row); 
+
+  });
+
+});
+</script>
 <script>
   // Get active user count
-  const activeUsersRef = db.collection('userdoc').where('isActive', '==', true);
+  const activeUsersRef = db.collection('used').where('isActive', '==', true);
   activeUsersRef.onSnapshot((snapshot) => {
     const activeUserCount = snapshot.size;
     document.getElementById('active-user-count').textContent = activeUserCount;
   });
 
-  
+
   // Get total user count
-  const usersRef = db.collection('userdoc');
+  const usersRef = db.collection('used');
   usersRef.onSnapshot((snapshot) => {
     const totalUserCount = snapshot.size;
     document.getElementById('total-user-count').textContent = totalUserCount;
   });
 </script>
+
+
     <script src="dist/js/script.js"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
