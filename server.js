@@ -11,6 +11,7 @@ const port = process.env.PORT || 5050;
 const bodyParser = require("body-parser");
 const UserInfo=require('./schema')
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -74,18 +75,38 @@ app.get('/api/recommended-recipes', (req, res) => {
 
 
 app.post('/api/user-data', async (req, res) => {
-  const newUser = new UserInfo(req.body);
-  const userId=newUser._id;
+
+  // Create new user object
+  const newUser = new UserInfo({
+    _id: new mongoose.Types.ObjectId(),  
+    gender: req.body.gender,
+    age: req.body.age,
+    diet_type: req.body.diet_type,
+    activity_lifestyle: req.body.activity_lifestyle,
+    medical_history: req.body.medical_history, 
+    medical_details: req.body.medical_details,
+    weight: req.body.weight,
+    height: req.body.height,
+    fitness_goal: req.body.fitness_goal
+  });
 
   try {
-    
+    // Save user to database
     await newUser.save();
-    console.log('User data stored successfully');
-    res.sendStatus(201); 
-  } catch (err) {
-    console.error('Error storing user data:', err);
+
+    // Send success response 
+    res.sendStatus(201);
+    
+    console.log('User data stored successfully', newUser);
+
+  } catch (error) {
+
+    // Send error response
     res.status(500).send('Error storing user data');
+
+    console.error('Error storing user data:', error); 
   }
+
 });
 
 app.get('/api/user-info', async (req, res) => {
@@ -98,22 +119,26 @@ app.get('/api/user-info', async (req, res) => {
   }
 });
 
+const recipeSchema = require('./schema')
 async function recommendRecipes() {
   try {
     const users = await UserInfo.find();
 
     for (const userData of users) {
-      const prompt = `
-        Given the following user data:
-        - Gender: ${userData.gender}
-        - Age: ${userData.age}
-        - Weight: ${userData.weight} lbs
-        - Height: ${userData.height} inches
-        - Fitness Goal: ${userData.fitness_goal}
-        - Diet Type: ${userData.diet_type}
-
-        Please recommend a recipe for each day of the week that aligns with the user's preferences and goals.
-      `;
+      const prompt = `Please recommend 7 recipes, one for each day of the week, that meet the following preferences:
+      - Gender: ${userData.gender}  
+      - Age: ${userData.age}
+      - Weight: ${userData.weight} lbs  
+      - Height: ${userData.height} inches
+      - Goal: ${userData.fitness_goal} 
+      - Diet: ${userData.diet_type}
+      
+      For each recipe, include the:
+      - Recipe name
+      - Ingredient list with quantities and units 
+      - Step-by-step instructions
+      - Health benefits      
+    `;
 
       try {
         // Call OpenAI API with optimized parameters (example, adjust as needed)
@@ -122,8 +147,8 @@ async function recommendRecipes() {
           {
             model: 'gpt-3.5-turbo',
             messages: [{ role: 'user', content: prompt }],
-            max_tokens: 1500, // Allow for more detailed responses
-            n: 7, // Generate recipes for each day of the week
+            max_tokens: 1500, 
+            n: 7, 
             stop: null,
             temperature: 0.7,
           },
@@ -134,10 +159,24 @@ async function recommendRecipes() {
             },
           }
         );
-
         const recommendedRecipes = response.data.choices.map((choice) => choice.message.content);
-
-        await UserInfo.updateOne(
+     
+  
+        const recipesRef = db.collection('recipes').doc(userData.userId);
+        await recipesRef.set({ recipes: recommendedRecipes });
+        console.log('Recipe recommendation successful', recommendedRecipes)
+      } catch (error) {
+        console.error('Error recommending recipes for user', userData.userId, error.message);
+      }
+    }
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  }
+  
+  
+/*
+        await recipeSchema.updateOne(
           { _id: userData._id },
           { $set: { recommended_recipes: recommendedRecipes } }
         );
@@ -151,6 +190,7 @@ async function recommendRecipes() {
     console.error('Error in recommendRecipes function:', error.message);
   }
 }
+*/
 
 
 cron.schedule('*/2 * * * *', () => {
@@ -164,6 +204,7 @@ mongoose.connection.once('open',()=>{
     console.log(`app is running at localhost:${port}`);
   });
   })
+
 /*const express = require('express');
 const mysql = require('mysql'); 
 const bodyParser = require('body-parser');

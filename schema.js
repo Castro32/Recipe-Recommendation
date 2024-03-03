@@ -13,13 +13,15 @@ const userSchema = new mongoose.Schema({
     },
     age: {
         type: Number,
-        min: 1, // Ensure valid age range
+        min: 1, 
         max: 120,
         required: true,
     },
     diet_type: String,
-    activity_lifestyle: String, // Add this line
-    medical_history: Boolean,
+    activity_lifestyle: String, 
+    medical_history: {
+        type: String
+      },
     medical_details_choice: String,
     weight: {
         type: Number,
@@ -32,8 +34,63 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     fitness_goal: String,
-    recommended_recipes: [String] // Array of recommended recipes
 });
 
 
 module.exports = mongoose.model('UserInfo', userSchema);
+
+
+///recommended Recipees Schema
+//should contain ingredients and instructions to cook it 
+const recipeSchema = new mongoose.Schema({
+
+    name: {
+      type: String,
+      required: true 
+    },
+  
+    ingredients: [{
+      name: {
+        type: String,
+        required: true
+      },
+      quantity: { 
+        type: Number,
+        required: true
+      },
+      unit: {
+        type: String,
+        enum: ['cups', 'grams', 'ounces']
+      }
+    }],
+  
+    instructions: [{
+      stepNumber: {
+        type: Number,
+        required: true  
+      },
+      text: {
+        type: String, 
+        required: true
+      }
+    }],
+  
+    benefits: [{
+      benefit: {
+        type: String,
+        required: true
+      },
+      description: String 
+    }],
+  
+    mealType: {
+      type: String,
+      enum: ['breakfast', 'lunch','dinner'] 
+    } 
+  
+  },
+  {
+     timestamps: true  
+  });
+  
+  module.exports = mongoose.model('Recipe', recipeSchema);

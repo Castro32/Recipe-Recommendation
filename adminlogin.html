@@ -278,40 +278,6 @@ function handleSubmit(event) {
       alert('Error signing in: ' + errorMessage);
     });
 }
-  event.preventDefault();
-
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
-  const idTokenInput = document.getElementById('idToken');
-
-  const email = emailInput.value;
-  const password = passwordInput.value;
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      var user = userCredential.user;
-      return user.getIdToken();
-    })
-    .then((idToken) => {
-      idTokenInput.value = idToken;
-      const isAdminFunction = functions.httpsCallable('isAdmin');
-      return isAdminFunction({ email: email, idToken: idToken });
-    })
-    .then((result) => {
-      if (result.data.isAdmin) {
-        // User is an admin, redirect to the admin dashboard
-        window.location.href = 'landingpage.html';
-      } else {
-        // User is not an admin, redirect to the regular dashboard
-        window.location.href = 'sidebar.html';
-      }
-    })
-    .catch((error) => {
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      alert('Error signing in: ' + errorMessage);
-    });
-
 </script>
 
 </body>
