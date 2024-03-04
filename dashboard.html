@@ -171,23 +171,17 @@
     <main>
         <section>
             <div>
-                <button onclick="redirectToMealPage()" class="card" style="background: rgb(30,116,19);
-                        background: linear-gradient(90deg, rgba(30,116,19,1) 0%, rgba(28,165,49,0.3170518207282913) 39%, rgba(99,228,151,0.6055672268907564) 100%);
-                        color: white;
-                        border-radius: 8px;
-                        outline: none;
-                        padding: 20px;
-                        margin: 15px;
-                        width: 300px;">
+                <button onclick="redirectToRecipePage()" class="car">
                     <h2>Today's Meal</h2>
                 </button>
+                
+                <script>
+                    function redirectToRecipePage() {
+                        window.location.href = 'recipes.html';
+                    }
+                </script>
+                
             </div>
-            
-            <script>
-                function redirectToMealPage() {
-                window.location.href = 'Meal.html';
-            }
-            </script>
             
                         
             
