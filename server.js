@@ -103,10 +103,7 @@ app.post('/api/user-data', async (req, res) => {
 
   try {
       
-  const savedUser = await user.save(); 
-  
-    // Send success response 
- //   res.sendStatus(201);
+  const savedUser = await user.save();
     
     console.log('User data stored successfully', savedUser._id);
   res.status(201).json({ message: "User created successfully", user: savedUser });
@@ -223,6 +220,105 @@ cron.schedule('*/2 * * * *', () => {
   console.log('Running recipe recommendation');
   recommendRecipes();
 });
+
+app.get('/api/recommended-recipes', async (req, res) => {
+  try {
+    const recipes = await db.collection('recipes').get();
+    const recommendedRecipes = [];
+    recipes.forEach((doc) => {
+      recommendedRecipes.push(doc.data());
+    });
+    console.log('Recommended recipes:', recommendedRecipes);
+    res.json(recommendedRecipes);
+  } catch (error) {
+    console.error('Error fetching recommended recipes:', error.message);
+    res.status(500).send('Error fetching recommended recipes');
+  }
+});
+
+app.get('/api/recipes', async (req, res) => {
+
+  try {
+
+    const snapshot = await db.collection('recipes').get();
+
+    const recipes = [];
+
+    snapshot.forEach(doc => {
+
+      // Get userId from doc
+      const userId = doc.data().userId;  
+
+      recipes.push({
+        id: doc.id,
+        ...doc.data()  
+      });
+
+    });
+    
+    res.json(recipes);
+
+  } catch (error) {
+     console.log(error);
+     res.status(500).send('Error getting recipes');
+  }
+
+});
+
+app.get('/admin/recipes-report', async (req, res) => {
+
+  try {
+
+    // Get filters
+    const { startDate, endDate, limit } = req.query;
+
+    // Query by filters
+    const snapshot = db.collection('recipes')
+                      .where('createdAt', '>=', startDate) 
+                      .where('createdAt', '<=', endDate)
+                      .limit(limit)
+                      .get();
+    
+    const recipes = [];
+    
+    snapshot.forEach(doc => {
+      recipes.push({
+        id: doc.id,
+         ...doc.data()
+      });
+    });
+
+    // Generate report
+    const report = generateReport(recipes); 
+
+    // Set headers for file download  
+    res.setHeader('Content-Type', 'text/json');
+    res.setHeader('Content-Disposition', 'attachment; filename=recipes-report.json');
+
+    // Send report file
+    res.status(200).end(JSON.stringify(report));
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error getting recipes report');  
+  }
+
+});
+
+// Generate report data
+function generateReport(recipes) {
+
+  // Mapping to extract fields  
+  return recipes.map(r => {
+     return {
+       user: r.userId, 
+       recipe: r.name,
+       ingredients: r.ingredients,
+       instructions: r.instructions
+     };
+  });  
+}
+
 
 mongoose.connection.once('open',()=>{
   console.log(`Connected Successfully to the Database: ${mongoose.connection.name}`)

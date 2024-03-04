@@ -52,9 +52,19 @@
     <header>
         <h1>Today's Meal</h1>
     </header>
-        
+
+    <h3 id="recipe-name">Recipe Name</h3>
+
+<p id="ingredients">
+  Ingredients 
+</p>
+
+<p id="instructions">
+  Instructions
+</p>
+    <!--    
     <section>
-        <a style="text-decoration:none" >`$`</a>
+        <a style="text-decoration:none" >Ingredients</a>
     </section>
     <p>
       <ol>
@@ -67,38 +77,55 @@
       </ol>
     </p>
     <section>
-        <a style="text-decoration:none" >`${recipes}`</a>
+        <a style="text-decoration:none" >Instructions</a>
     </section>
     <p>1. Cook the steak to your desired doneness.
         2. Slice the avocado and cherry tomatoes.
         3. Toss mixed greens with olive oil and balsamic vinegar.
         4. Top salad with sliced steak, avocado, and cherry tomatoes.
-    </p>
+    </p>-->
 </body>
 
 <script>
     // Update the frontend code to fetch recommended recipes directly from the database
+// Fetch recipes on page load
 window.onload = async function() {
-    try {
-        const response = await fetch('http://localhost:8082/api/recommended-recipes');
-        const data = await response.json();
 
-        const recipesContainer = document.getElementById('recipes-container');
-        if (data && data.length > 0) {
-            data.forEach(recipe => {
-                const recipeElement = document.createElement('div');
-                recipeElement.textContent = recipe.recipes;
-                recipesContainer.appendChild(recipeElement);
-            });
-        } else {
-            const errorMessage = document.createElement('p');
-            errorMessage.textContent = 'No recommended recipes found';
-            recipesContainer.appendChild(errorMessage);
-        }
-    } catch (error) {
-        console.error('Error fetching recommended recipes:', error);
-    }
-};
+try {
+
+  // API call to get recipes for user
+  const response = await fetch('http://localhost:5050/api/recipes');
+  const data = await response.json();
+
+  // Get elements 
+  const recipeNameEl = document.getElementById('recipe-name'); 
+  const ingredientsEl = document.getElementById('ingredients');
+  const instructionsEl = document.getElementById('instructions');
+
+  // Display first recipe 
+  const recipe = data[0];
+  
+  recipeNameEl.innerText = recipe.name;
+
+  let ingredientsHtml = '';
+  recipe.ingredients.forEach(ing => {
+    ingredientsHtml += `${ing.quantity} ${ing.unit} ${ing.name}\n`;
+  });
+
+  ingredientsEl.innerText = ingredientsHtml;
+
+  let instructionsHtml = ''; 
+  recipe.instructions.forEach(step => {
+    instructionsHtml += `${step.stepNumber}: ${step.text}\n`;
+  });
+  
+  instructionsEl.innerText = instructionsHtml;
+
+} catch (err) {
+  console.log(err);
+}
+
+}
 </script>
 
 </html>

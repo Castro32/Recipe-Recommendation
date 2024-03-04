@@ -59,7 +59,7 @@ exports.addminrole = onRequest(async (req, res) => {
 exports.isAdmin = functions.https.onCall(async (data, context) => {
     const email = data.email;
     const idToken = data.idToken;
-    const adminEmail = 'oumaoduor5827@gmail.com'; // Replace with your admin email
+    const adminEmail = 'oumaoduor5827@gmail.com'; 
   
     try {
       const decodedToken = await admin.auth().verifyIdToken(idToken);
