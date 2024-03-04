@@ -183,12 +183,13 @@ async function recommendRecipes() {
             },
           }
         );
-        const recommendedRecipes =  response.data.choices[0].message.content;
-
+        const recommendedRecipes = response.data.choices.map((choice) => ({
+          recipe: choice.message.content,
+        }));
   
         const recipesRef = db.collection('recipes').doc();
         await recipesRef.set({ recipes: recommendedRecipes });
-        console.log('Recipe recommendation successful', recommendedRecipes)
+        console.log('Recipe recommendation successful', recommendedRecipes);
       } catch (error) {
         console.error('Error recommending recipes for user', userData._id, error.message);
       }
@@ -223,11 +224,16 @@ cron.schedule('*/2 * * * *', () => {
 
 app.get('/api/recommended-recipes', async (req, res) => {
   try {
-    const recipes = await db.collection('recipes').get();
+    const recipesSnapshot = await db.collection('recipes').get();
     const recommendedRecipes = [];
-    recipes.forEach((doc) => {
-      recommendedRecipes.push(doc.data());
+
+    recipesSnapshot.forEach((doc) => {
+      const recipeData = doc.data();
+      if (recipeData.recipes) {
+        recommendedRecipes.push({ id: doc.id, recipes: recipeData.recipes });
+      }
     });
+
     console.log('Recommended recipes:', recommendedRecipes);
     res.json(recommendedRecipes);
   } catch (error) {
@@ -263,6 +269,10 @@ app.get('/api/recipes', async (req, res) => {
 app.get('/api/download-report', async (req, res) => {
   try {
     const { startDate, endDate, limit } = req.query;
+
+    console.log('Start Date:', startDate)  
+    console.log('End Date:', endDate)
+    console.log('Limit:', limit)
     const snapshot = await db.collection('recipes')
       .where('createdAt', '>=', startDate)
       .where('createdAt', '<=', endDate)
@@ -278,6 +288,7 @@ app.get('/api/download-report', async (req, res) => {
 
     // Generate report data
     const reportData = generateReport(recipes);
+    console.log('Report data:', reportData)
 
     // Set headers for file download
     res.setHeader('Content-Type', 'text/csv');
