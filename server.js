@@ -189,11 +189,11 @@ async function recommendRecipes() {
         const recommendedRecipes =  response.data.choices[0].message.content;
 
   
-        const recipesRef = db.collection('recipes').doc(userData.userId);
+        const recipesRef = db.collection('recipes').doc();
         await recipesRef.set({ recipes: recommendedRecipes });
         console.log('Recipe recommendation successful', recommendedRecipes)
       } catch (error) {
-        console.error('Error recommending recipes for user', userData.userId, error.message);
+        console.error('Error recommending recipes for user', userData._id, error.message);
       }
     }
     } catch (error) {
