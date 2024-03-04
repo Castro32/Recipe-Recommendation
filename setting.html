@@ -117,7 +117,15 @@
                             <button type="submit"
                                 class="text-white bg-indigo-700  hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">Save</button>
                         </div>
+                        <script>
+                            // Retrieve saved data
+                                const userData = JSON.parse(localStorage.getItem('userData'));
 
+                                // Display in relevant UI elements
+                                document.getElementById('gender-text').textContent = userData.gender; 
+                                document.getElementById('dob-text').textContent = userData.dob;
+                                // etc
+                        </script>
                     </div>
                 </div>
             </div>
