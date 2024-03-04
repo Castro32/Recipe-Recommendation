@@ -66,9 +66,7 @@
     "minipass": "^7.0.4",
     "mongod": "^2.0.0",
     "mongoose": "^8.2.0",
-
     "moongoose": "^0.0.5",
-
     "mysql": "^2.18.1",
     "mz": "^2.7.0",
     "nanoid": "^3.3.7",

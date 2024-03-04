@@ -12,7 +12,7 @@ const bodyParser = require("body-parser");
 const UserInfo=require('./schema')
 const admin = require('firebase-admin');
 // Initialize Firebase Admin SDK
-const serviceAccount = require('./native-functions-dd65b-firebase-adminsdk-1x0vr-19c118f2a5.json')
+const serviceAccount = require('./native-functions-dd65b-firebase-adminsdk-1x0vr-19c118f2a5.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   ignoreUndefinedProperties: true, 
@@ -236,87 +236,76 @@ app.get('/api/recommended-recipes', async (req, res) => {
   }
 });
 
+// API endpoint to fetch recipes
 app.get('/api/recipes', async (req, res) => {
-
   try {
-
-    const snapshot = await db.collection('recipes').get();
-
-    const recipes = [];
-
-    snapshot.forEach(doc => {
-
-      // Get userId from doc
-      const userId = doc.data().userId;  
-
-      recipes.push({
-        id: doc.id,
-        ...doc.data()  
-      });
-
-    });
-    
-    res.json(recipes);
-
-  } catch (error) {
-     console.log(error);
-     res.status(500).send('Error getting recipes');
-  }
-
-});
-
-app.get('/admin/recipes-report', async (req, res) => {
-
-  try {
-
-    // Get filters
     const { startDate, endDate, limit } = req.query;
+    const snapshot = await db.collection('recipes')
+      .where('createdAt', '>=', startDate)
+      .where('createdAt', '<=', endDate)
+      .limit(parseInt(limit)) 
+      .get();
 
-    // Query by filters
-    const snapshot = db.collection('recipes')
-                      .where('createdAt', '>=', startDate) 
-                      .where('createdAt', '<=', endDate)
-                      .limit(limit)
-                      .get();
-    
     const recipes = [];
-    
     snapshot.forEach(doc => {
-      recipes.push({
-        id: doc.id,
-         ...doc.data()
-      });
+      const userId = doc.data().userId;
+      recipes.push({ id: doc.id, ...doc.data() });
     });
 
-    // Generate report
-    const report = generateReport(recipes); 
-
-    // Set headers for file download  
-    res.setHeader('Content-Type', 'text/json');
-    res.setHeader('Content-Disposition', 'attachment; filename=recipes-report.json');
-
-    // Send report file
-    res.status(200).end(JSON.stringify(report));
-
+    res.json(recipes);
   } catch (error) {
     console.log(error);
-    res.status(500).send('Error getting recipes report');  
+    res.status(500).send('Error getting recipes');
   }
+});
 
+// API endpoint to download report
+app.get('/api/download-report', async (req, res) => {
+  try {
+    const { startDate, endDate, limit } = req.query;
+    const snapshot = await db.collection('recipes')
+      .where('createdAt', '>=', startDate)
+      .where('createdAt', '<=', endDate)
+      .limit(parseInt(limit)) 
+      .get();
+
+    const recipes = [];
+    snapshot.forEach(doc => {
+      recipes.push({ id: doc.id, ...doc.data() });
+    });
+
+    console.log('Recipes:', recipes)
+
+    // Generate report data
+    const reportData = generateReport(recipes);
+
+    // Set headers for file download
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=recipes-report.csv');
+
+    // Convert report data to CSV format
+    const csvData = reportData
+      .map((recipe) => `${recipe.user},${recipe.recipe},${recipe.ingredients},${recipe.instructions}`)
+      .join('\n');
+
+    // Send report file
+    res.status(200).send(csvData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Error getting recipes report');
+  }
 });
 
 // Generate report data
 function generateReport(recipes) {
-
-  // Mapping to extract fields  
   return recipes.map(r => {
-     return {
-       user: r.userId, 
-       recipe: r.name,
-       ingredients: r.ingredients,
-       instructions: r.instructions
-     };
-  });  
+    return {
+      user: r.userId,
+      recipe: r.name,
+      ingredients: r.ingredients.join(', '),
+      instructions: r.instructions
+    };
+  });
 }
 
 

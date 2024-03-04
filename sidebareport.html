@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">   
+</head>
+<body>
+
+  
+      <body class="bg-gray-100">
+      
+        <div class="max-w-3xl mx-auto p-4">
+      
+          <h1 class="text-2xl font-bold mb-4">Recipes Report</h1>
+      
+          <div class="space-y-4">
+      
+            <!-- Date filters -->
+            <div class="flex space-x-4">
+              <input type="date" id="start-date">  
+              <input type="date" id="end-date">
+            </div>
+      
+            <!-- Limit filter -->
+            <input 
+              type="number" 
+              id="limit"
+              value="10"
+              class="px-4 py-2 border border-gray-300 rounded w-full">
+      
+            <!-- Download button -->
+            <button
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onclick="downloadReport()">
+              Download Report  
+            </button>
+      
+          </div>
+      
+        </div>
+      
+        <script>
+      
+      async function downloadReport() {
+  // Get filters
+  const startDate = document.getElementById('start-date').value;
+  const endDate = document.getElementById('end-date').value;
+  const limit = document.getElementById('limit').value;
+
+  // API call to fetch recipes
+  const response = await fetch(`http://localhost:5050/api/recipes?startDate=${startDate}&endDate=${endDate}&limit=${limit}`);
+  const recipes = await response.json();
+
+  // API call to download report
+  const reportResponse = await fetch(`http://localhost:5050/api/download-report?startDate=${startDate}&endDate=${endDate}&limit=${limit}`);
+  const reportData = await reportResponse.text();
+
+  // Create a temporary anchor element to initiate file download
+  const downloadLink = document.createElement('a');
+  downloadLink.setAttribute('href', `data:text/csv;charset=utf-8,${encodeURIComponent(reportData)}`);
+  downloadLink.setAttribute('download', 'recipes-report.csv');
+  downloadLink.style.display = 'none';
+  document.body.appendChild(downloadLink);
+
+  // Trigger the click event to download the file
+  downloadLink.click();
+
+  // Remove the temporary anchor element
+  document.body.removeChild(downloadLink);
+}
+      
+        </script>
+      
+      </body>
+    
+</body>
+</html>
