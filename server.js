@@ -158,6 +158,8 @@ async function recommendRecipes() {
       - Diet: ${userData.diet_type}
       
       For each recipe, include the:
+      -breakFast,Lunch,Supper for each day of the week
+      -letthe recipees be African Based on natural food
       - Recipe name
       - Ingredient list with quantities and units 
       - Step-by-step instructions
@@ -183,12 +185,46 @@ async function recommendRecipes() {
             },
           }
         );
-        const recommendedRecipes = response.data.choices.map((choice) => ({
-          recipe: choice.message.content,
-        }));
+
+        const recommendedRecipes = response.data.choices.map((choice) => {
+          const lines = choice.message.content.trim().split('\n');
+          const recipeName = lines[0];
+          const ingredients = [];
+          const instructions = [];
+          let currentSection = null;
+        
+          for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+        
+            if (line.toLowerCase().startsWith('ingredients:')) {
+              currentSection = 'ingredients';
+            } else if (line.toLowerCase().startsWith('instructions:')) {
+              currentSection = 'instructions';
+            } else if (line) {
+              if (currentSection === 'ingredients') {
+                ingredients.push(line);
+              } else if (currentSection === 'instructions') {
+                instructions.push(line);
+              }
+            }
+          }
+        
+          return {
+            //user ID
+            userId: userData._id.toString(),
+            recipe: recipeName,
+            ingredients,
+            instructions,
+          };
+        });
+      
   
         const recipesRef = db.collection('recipes').doc();
-        await recipesRef.set({ recipes: recommendedRecipes });
+       // await recipesRef.set({ recipes: recommendedRecipes });
+       await recipesRef.set({
+       userId: userData._id.toString(), 
+        recipes: recommendedRecipes,
+      });
         console.log('Recipe recommendation successful', recommendedRecipes);
       } catch (error) {
         console.error('Error recommending recipes for user', userData._id, error.message);
@@ -269,14 +305,14 @@ app.get('/api/recipes', async (req, res) => {
 app.get('/api/download-report', async (req, res) => {
   try {
     const { startDate, endDate, limit } = req.query;
+    console.log('Start Date:', startDate);
+    console.log('End Date:', endDate);
+    console.log('Limit:', limit);
 
-    console.log('Start Date:', startDate)  
-    console.log('End Date:', endDate)
-    console.log('Limit:', limit)
     const snapshot = await db.collection('recipes')
       .where('createdAt', '>=', startDate)
       .where('createdAt', '<=', endDate)
-      .limit(parseInt(limit)) 
+      .limit(parseInt(limit))
       .get();
 
     const recipes = [];
@@ -284,20 +320,18 @@ app.get('/api/download-report', async (req, res) => {
       recipes.push({ id: doc.id, ...doc.data() });
     });
 
-    console.log('Recipes:', recipes)
+    console.log('Recipes:', recipes);
 
     // Generate report data
     const reportData = generateReport(recipes);
-    console.log('Report data:', reportData)
+    console.log('Report data:', reportData);
 
     // Set headers for file download
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=recipes-report.csv');
 
     // Convert report data to CSV format
-    const csvData = reportData
-      .map((recipe) => `${recipe.user},${recipe.recipe},${recipe.ingredients},${recipe.instructions}`)
-      .join('\n');
+    const csvData = reportData.map(recipe => Object.values(recipe).join(',')).join('\n');
 
     // Send report file
     res.status(200).send(csvData);
@@ -309,13 +343,14 @@ app.get('/api/download-report', async (req, res) => {
 
 // Generate report data
 function generateReport(recipes) {
-  return recipes.map(r => {
-    return {
-      user: r.userId,
-      recipe: r.name,
+  return recipes.flatMap(recipe => {
+    const { userId, recipes: recipeList } = recipe;
+    return recipeList.map(r => ({
+      user: userId,
+      recipe: r.recipe,
       ingredients: r.ingredients.join(', '),
-      instructions: r.instructions
-    };
+      instructions: r.instructions.join(', '),
+    }));
   });
 }
 

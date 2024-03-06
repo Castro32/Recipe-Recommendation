@@ -57,20 +57,21 @@ exports.addminrole = onRequest(async (req, res) => {
 });
 
 exports.isAdmin = functions.https.onCall(async (data, context) => {
-    const email = data.email;
-    const idToken = data.idToken;
-    const adminEmail = 'oumaoduor5827@gmail.com'; 
-  
-    try {
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      if (email === adminEmail && decodedToken.admin === true) {
-        return { isAdmin: true };
-      } else {
-        return { isAdmin: false };
-      }
-    } catch (error) {
-      console.error('Error verifying ID token:', error);
-      throw new functions.https.HttpsError('invalid-argument', 'Invalid ID token');
+  const email = data.email;
+  const idToken = data.idToken;
+  const adminEmail = 'oumaoduor5827@gmail.com';
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    console.log('Decoded Token:', decodedToken); 
+    if (email === adminEmail && decodedToken.customClaims.admin === true) {
+      return { isAdmin: true };
+    } else {
+      return { isAdmin: false };
     }
-  });
+  } catch (error) {
+    console.error('Error verifying ID token:', error);
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid ID token');
+  }
+});
 
