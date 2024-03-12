@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     // Basic Information
     gender: {
         type: String,
-        enum: ['male', 'female', 'other', 'prefer not to say'], // Optional: Allow customization
+        enum: ['male', 'female', 'other', 'prefer not to say'],
         required: true,
     },
     age: {

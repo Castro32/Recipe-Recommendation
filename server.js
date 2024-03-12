@@ -29,59 +29,6 @@ app.use(bodyParser.json());
 
 // connect Database
 connectDB(); 
-/*
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "users"
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL database:', err);
-  } else {
-    console.log('Connected to MySQL database');
-  }
-});
-
-app.post('/api/user-data', (req, res) => {
-  const {
-    Gender = "rather not say",
-    Age ,
-    Height,
-    Weight ,
-    Diet_Type,
-    Active_Lifestyle = true,
-    Fitness_Goal
-  } = req.body;
-
-  const sql = "INSERT INTO users (Gender, Age, Height, Weight, Diet_Type, Active_Lifestyle, Fitness_Goal) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  const values = [Gender, Age, Height, Weight, Diet_Type, Active_Lifestyle, Fitness_Goal];
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error storing user data:', err);
-      res.status(500).send('Error storing user data');
-    } else {
-      console.log('User data stored successfully');
-      res.sendStatus(200);
-    }
-  });
-});
-
-app.get('/api/recommended-recipes', (req, res) => {
-  const query = "SELECT * FROM recommended_recipes";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching recommended recipes:', err);
-      res.status(500).send('Error fetching recommended recipes');
-    } else {
-      res.json(results); // Send the fetched recommended recipes data as JSON response
-    }
-  });
-});
-*/
 
 
 app.post('/api/user-data', async (req, res) => {
@@ -107,20 +54,7 @@ app.post('/api/user-data', async (req, res) => {
     
   console.log('User data stored successfully', savedUser._id);
   res.status(201).json({ message: "User created successfully", user: savedUser });
-  // Get user details
-//const userDetails = await UserInfo.findById(savedUser._id);
 
-//console.log('User details:', userDetails);
-  // Recommend recipes
-//const recipes = await recommendRecipes(userDetails);
-
-  // Save recipes
- // await db.collection('recipes').add({
-  //  userId: userDetails._id,
-  //  recipes
-  //});
-
-  //console.log('Recipes saved to Firestore');
 
   } catch (error) {
 
@@ -166,7 +100,6 @@ async function recommendRecipes() {
     `;
 
       try {
-        // Call OpenAI API with optimized parameters (example, adjust as needed)
         const response = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           {
@@ -207,7 +140,6 @@ async function recommendRecipes() {
               }
             }
           }
-        
           return {
             //user ID
             userId: userData._id.toString(),
@@ -218,7 +150,6 @@ async function recommendRecipes() {
         });
         
         const recipesRef = db.collection('recipes').doc();
-       // await recipesRef.set({ recipes: recommendedRecipes });
        await recipesRef.set({
        userId: userData._id.toString(), 
         recipes: recommendedRecipes,
