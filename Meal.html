@@ -84,12 +84,56 @@
         3. Toss mixed greens with olive oil and balsamic vinegar.
         4. Top salad with sliced steak, avocado, and cherry tomatoes.
     </p>-->
-</body>
-
+<!--
 <script>
     // Update the frontend code to fetch recommended recipes directly from the database
 // Fetch recipes on page load
 window.onload = async function() {
+  try {
+    // Check if the user is logged in
+    const userId = getUserId();
+    
+    if (!userId) {
+      // User is not logged in, display a message or redirect to the login page
+      console.log('User is not logged in. Please log in to view recipes.');
+      return;
+    }
+
+    // API call to get recipes for the user
+    const response = await fetch(`http://localhost:5050/api/recipes/${userId}`);
+    const data = await response.json();
+
+    // Get elements
+    const recipeNameEl = document.getElementById('recipe-name');
+    const ingredientsEl = document.getElementById('ingredients');
+    const instructionsEl = document.getElementById('instructions');
+
+    // Display the first recipe for the user
+    if (data.length > 0) {
+      const recipe = data[0].recipes[0];
+
+      recipeNameEl.innerText = recipe.recipe;
+
+      let ingredientsHtml = '';
+      recipe.ingredients.forEach(ing => {
+        ingredientsHtml += `${ing}\n`;
+      });
+
+      ingredientsEl.innerText = ingredientsHtml;
+
+      let instructionsHtml = '';
+      recipe.instructions.forEach(step => {
+        instructionsHtml += `${step}\n`;
+      });
+
+      instructionsEl.innerText = instructionsHtml;
+    } else {
+      console.log('No recipes found for the user.');
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 try {
 
@@ -102,8 +146,9 @@ try {
   const ingredientsEl = document.getElementById('ingredients');
   const instructionsEl = document.getElementById('instructions');
 
-  // Display first recipe 
-  const recipe = data[0];
+  // Display recipe according to the users id 
+
+ 
   
   recipeNameEl.innerText = recipe.name;
 
@@ -127,5 +172,94 @@ try {
 
 }
 </script>
+-->
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-functions.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCpd0Mwy_BudiA-z3KMsfrqw3nt3Gy7h6M",
+  authDomain: "native-functions-dd65b.firebaseapp.com",
+  projectId: "native-functions-dd65b",
+  storageBucket: "native-functions-dd65b.appspot.com",
+  messagingSenderId: "773232537571",
+  appId: "1:773232537571:web:68ab00cedad20c66397ad6"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const functions = firebase.functions();
+const db = firebase.firestore();
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+const settings = { timestampsInSnapshots: true };
+db.settings(settings);
+</script>
+
+<script>
+  function getUserId() {
+      const user = firebase.auth().currentUser;
+      if (user) {
+          return user.uid;
+      } else {
+          return null;
+      }
+  }
+
+  window.onload = async function() {
+      try {
+          // Check if the user is logged in
+          const userId = getUserId();
+          
+          // Check if the user is already on the login page
+          const isLoginPage = window.location.pathname.includes('login.html');
+
+          if (!userId && !isLoginPage) {
+              // User is not logged in, redirect to the login page
+              window.location.href = 'login.html';
+              return;
+          }
+
+          // API call to get recipes for the user
+          const response = await fetch(`http://localhost:5050/api/recipes/${userId}`);
+          const data = await response.json();
+
+          // Get elements
+          const recipeNameEl = document.getElementById('recipe-name');
+          const ingredientsEl = document.getElementById('ingredients');
+          const instructionsEl = document.getElementById('instructions');
+
+          // Display the first recipe for the user
+          if (data.length > 0) {
+              const recipe = data[0].recipes[0];
+
+              recipeNameEl.innerText = recipe.recipe;
+
+              let ingredientsHtml = '';
+              recipe.ingredients.forEach(ing => {
+                  ingredientsHtml += `${ing}\n`;
+              });
+
+              ingredientsEl.innerText = ingredientsHtml;
+
+              let instructionsHtml = '';
+              recipe.instructions.forEach(step => {
+                  instructionsHtml += `${step}\n`;
+              });
+
+              instructionsEl.innerText = instructionsHtml;
+          } else {
+              console.log('No recipes found for the user.');
+          }
+      } catch (err) {
+          console.log(err);
+      }
+  };
+</script>
+    <footer>
+        <p>Today's Meal &copy; 2021</p>
+    </footer>
+</body>
 </html>

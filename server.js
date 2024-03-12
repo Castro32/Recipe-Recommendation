@@ -11,7 +11,8 @@ const port = process.env.PORT || 5050;
 const bodyParser = require("body-parser");
 const UserInfo=require('./schema')
 const admin = require('firebase-admin');
-// Initialize Firebase Admin SDK
+
+
 const serviceAccount = require('./native-functions-dd65b-firebase-adminsdk-1x0vr-19c118f2a5.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -102,10 +103,9 @@ app.post('/api/user-data', async (req, res) => {
   });
 
   try {
-      
   const savedUser = await user.save();
     
-    console.log('User data stored successfully', savedUser._id);
+  console.log('User data stored successfully', savedUser._id);
   res.status(201).json({ message: "User created successfully", user: savedUser });
   // Get user details
 //const userDetails = await UserInfo.findById(savedUser._id);
@@ -113,7 +113,6 @@ app.post('/api/user-data', async (req, res) => {
 //console.log('User details:', userDetails);
   // Recommend recipes
 //const recipes = await recommendRecipes(userDetails);
-
 
   // Save recipes
  // await db.collection('recipes').add({
@@ -159,7 +158,7 @@ async function recommendRecipes() {
       
       For each recipe, include the:
       -breakFast,Lunch,Supper for each day of the week
-      -letthe recipees be African Based on natural food
+      -let the recipees be African Based on natural food
       - Recipe name
       - Ingredient list with quantities and units 
       - Step-by-step instructions
@@ -217,8 +216,7 @@ async function recommendRecipes() {
             instructions,
           };
         });
-      
-  
+        
         const recipesRef = db.collection('recipes').doc();
        // await recipesRef.set({ recipes: recommendedRecipes });
        await recipesRef.set({
@@ -301,6 +299,27 @@ app.get('/api/recipes', async (req, res) => {
   }
 });
 
+// API endpoint to fetch recipes for a specific user
+app.get('/api/recipes/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const recipesSnapshot = await db.collection('recipes').where('userId', '==', userId).get();
+
+    const recommendedRecipes = [];
+    recipesSnapshot.forEach((doc) => {
+      const recipeData = doc.data();
+      if (recipeData.recipes) {
+        recommendedRecipes.push({ id: doc.id, recipes: recipeData.recipes });
+      }
+    });
+
+    console.log('Recommended recipes for user:', userId, recommendedRecipes);
+    res.json(recommendedRecipes);
+  } catch (error) {
+    console.error('Error fetching recommended recipes:', error.message);
+    res.status(500).send('Error fetching recommended recipes');
+  }
+});
 // API endpoint to download report
 app.get('/api/download-report', async (req, res) => {
   try {
@@ -362,91 +381,3 @@ mongoose.connection.once('open',()=>{
   });
   })
 
-/*const express = require('express');
-const mysql = require('mysql'); 
-const bodyParser = require('body-parser');
-
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "baro"
-});
-
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL database:', err);
-  } else {
-    console.log('Connected to MySQL database');
-  }
-});
-
-app.post('/api/user-data', (req, res) => {
-  // Log the user payload
-  console.log("User Payload:", req.body);
-
-  const {
-    gender,
-    age,
-    diet_type,
-    activity_lifestyle,
-    medical_history,
-    medical_details,
-    medical_details_choice,
-    weight,
-    height,
-    fitness_goal,
-  } = req.body;
-
-  const sql = "INSERT INTO cas (gender, age, diet_type, activity_lifestyle, medical_history, medical_details, medical_details_choice, weight, height, fitness_goal) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  const values = [gender, age, diet_type, activity_lifestyle, medical_history, medical_details, medical_details_choice, weight, height, fitness_goal];
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error storing user data:', err);
-      res.status(500).send('Error storing user data');
-    } else {
-    //  console.log("User created:", result);
-
-      // Construct user details object
-      const userDetails = {
-        id: result.insertId,
-        gender,
-        age,
-        diet_type,
-        activity_lifestyle,
-        medical_history,
-        medical_details,
-        medical_details_choice,
-        weight,
-        height,
-        fitness_goal
-      };
-      app.get('/api/user-data', (req, res) => {
-        db.query("SELECT * FROM users", (err, result) => {
-          if (err) {
-            console.error('Error getting user data:', err);
-            res.status(500).send('Error getting user data');
-          } else {
-            console.log("User data:", result);
-            return res.status(200).json({ message: "User data retrieved successfully", users: result });
-          }
-        }
-      )})
-      
-       console.log("User created:", userDetails);
-      return res.status(201).json({ message: "User created successfully", user: userDetails });  
-    }
-  });
-});
-
-
-const PORT = process.env.PORT || 8082;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-*/
