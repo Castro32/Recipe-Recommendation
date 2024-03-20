@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <title>Contact Us - Smart Home Nutrition Planner</title>
     <style>
         body {
@@ -22,31 +23,13 @@
         }
 
         .container {
-            max-width: 800px;
-            margin: auto;
+            max-width: 500px;
+            margin-left: 100px;
             padding: 10px;
+            margin-bottom: 40px;
         }
 
-        .contact-section {
-            margin-top: 20px;
-        }
-
-        .contact-section h2 {
-            color: #333;
-        }
-
-        .contact-section p {
-            margin-bottom: 15px;
-        }
-
-        .contact-section form {
-            margin-top: 20px;
-        }
-
-        .contact-section label {
-            display: block;
-            margin-bottom: 5px;
-        }
+     
 
         .contact-section input[type="text"],
         .contact-section input[type="email"],
@@ -80,6 +63,51 @@
             bottom: 0;
             width: 100%;
         }
+        .contact .row{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.contact-section .row {
+    padding: 20px;
+    gap: 10px;
+    margin-left: 100px;
+    
+  }
+  
+  
+  .contact .col {
+    display: flex;
+    flex-basis: 75%;
+    justify-content: space-between;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .contact-item {
+    width: calc(20% - 10px);
+    margin-bottom: 4px;
+  }
+  
+  .contact-item i {
+    font-size: 24px;
+    margin-right: 10px;
+    color: #2c3e50;
+  }
+  
+  .contact-item a {
+    color: #2c3e50;
+    text-decoration: none;
+  }
+ 
+  
+  .contact-item:hover a {
+    text-decoration: underline;
+  }
+  
     </style>
 </head>
 <body>
@@ -87,6 +115,30 @@
         <h1>Contact Us</h1>
     </header>
     <section class="contact-section">
+        <div class="row">
+            <div class="col">
+                <div class="contact-item">
+                  <i class="fab fa-whatsapp"></i>
+                  <a href="https://wa.me/+254114096574/" target="_blank">WhatsApp</a>
+                </div>
+              <div class="contact-item">
+                <i class="fa fa-phone"></i>
+                <a href="tel:+254114096574" target="_blank">Call</a>
+              </div>
+              <div class="contact-item">
+                <i class="fab fa-linkedin"></i>
+                <a href="" target="_blank">LinkedIn</a>
+              </div>
+              <div class="contact-item">
+                <i class="fab fa-twitter"></i>
+                <a href="https://twitter.com/fidel_castro32/" target="_blank">Twitter</a>
+              </div>
+              <div class="contact-item">
+                <i class="fab fa-instagram"></i>
+                <a href="https://www.instagram.com/cas_fide.l/" target="_blank">Instagram</a>
+              </div>
+            </div>  
+        </div>
         <div class="container">
             <h2>Feedback</h2>
             <p>We value your feedback! If you have any suggestions, comments, or ideas for improvement, please fill out the form below and let us know how we can serve you better.</p>
@@ -103,12 +155,7 @@
             <button style="background-color: green; color: #ffffff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;" onclick="window.location.href='mailto:contact@smarthomenutritionplanner.com'">Submit</button>
 
         </div>
-        <div class="container">
-            <h2>Our Contact Information</h2>
-            <p>For direct inquiries, you can also contact us using the following details:</p>
-            <p>Email: <a href="mailto:contact@smarthomenutritionplanner.com">contact@smarthomenutritionplanner.com</a> and Phone: <a href="tel:+254768632086">+254768632086</a></p>
-            <!-- <p>Phone: <a href="tel:+254768632086">+254768632086</a></p> -->
-        </div>
+        
     </section>
     <footer>
         &copy; 2024 Smart Home Nutrition Planner. All rights reserved.

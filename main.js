@@ -1,5 +1,3 @@
-
-
 const firebaseConfig = {
   apiKey: "AIzaSyCpd0Mwy_BudiA-z3KMsfrqw3nt3Gy7h6M",
   authDomain: "native-functions-dd65b.firebaseapp.com",
